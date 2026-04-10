@@ -4,7 +4,7 @@
     "slug": "proc-it",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/400x400ia-75.webp",
+    "icon": "./assets/images/icon.png",
     "scheme": "procit",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -20,7 +20,7 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/400x400ia-75.webp"
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",

@@ -110,7 +110,6 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Spinning Attack",  level: 150,        properties: ["Reverberation", "Detonation"] },
       { name: "Howling Fist",     level: 200,        properties: ["Liquefaction", "Impaction"] },
       { name: "Dragon Kick",      level: 225,        properties: ["Fragmentation"] },
-      { name: "Asuran Fists",     level: 230,        properties: ["Fragmentation"] },
       { name: "Asuran Fists",     level: "Quest",    properties: ["Gravitation", "Liquefaction"] },
       { name: "Tornado Kick",     level: 300,        properties: ["Impaction"] },
       { name: "Shijin Spiral",    level: "Aeonic",   properties: ["Light", "Fragmentation", "Impaction"] },

@@ -89,6 +89,15 @@ export default function DrawerLayout() {
               }}
             />
       <Drawer.Screen
+        name="blu"
+        options={{
+          title: "Blue Mage (BLU)",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="flask" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="skillchain"
         options={{
           title: "Skillchain Builder",
