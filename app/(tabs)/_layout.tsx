@@ -1,35 +1,111 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Drawer } from 'expo-router/drawer';
+import { Ionicons } from '@expo/vector-icons';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function DrawerLayout() {
   return (
-    <Tabs
+    <Drawer
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
+        headerShown: true,
+        headerStyle: { backgroundColor: '#1A202C' },
+        headerTintColor: '#FFFFFF',
+        drawerStyle: {
+          backgroundColor: '#2D3748',
+        },
+        drawerInactiveTintColor: '#A0AEC0',
+        drawerActiveTintColor: '#FFFFFF',
+        drawerActiveBackgroundColor: '#1A202C',
+      }}
+    >
+      <Drawer.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Home",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
         }}
       />
-      <Tabs.Screen
-        name="explore"
+      <Drawer.Screen
+        name="abyssea"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Abyssea",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="flame" size={size} color={color} />
+          ),
         }}
       />
-    </Tabs>
+      <Drawer.Screen
+        name="dynamis"
+        options={{
+          title: "Dynamis",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="skull" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="voidwatch"
+        options={{
+          title: "Voidwatch",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="eye" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="escha"
+        options={{
+          title: "Escha",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="git-merge" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="ambuscade"
+        options={{
+          title: "Ambuscade",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="shield" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="sortie"
+        options={{
+          title: "Sortie",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="rocket" size={size} color={color} />
+          ),
+        }}
+      />
+        <Drawer.Screen
+              name="SortieBoss"
+              options={{
+                title: "Sortie Boss",
+                drawerIcon: ({ color, size }) => (
+                  <Ionicons name="rocket" size={size} color={color} />
+                ),
+              }}
+            />
+      <Drawer.Screen
+        name="skillchain"
+        options={{
+          title: "Skillchain Builder",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="git-branch" size={size} color={color} />
+          ),
+        }}
+      />
+       <Drawer.Screen
+        name="about"
+        options={{
+          title: "About",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="information-circle" size={size} color={color} />
+          ),
+        }}
+      />
+    </Drawer>
   );
 }

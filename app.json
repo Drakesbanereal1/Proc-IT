@@ -4,7 +4,7 @@
     "slug": "proc-it",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/400x400ia-75.webp",
     "scheme": "procit",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
