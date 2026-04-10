@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.bg-wiki.com)",
+      "Bash(gh auth:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('splash:', d['expo'].get\\('web',{}\\).get\\('output','MISSING'\\)\\)\")"
+    ]
+  }
+}
