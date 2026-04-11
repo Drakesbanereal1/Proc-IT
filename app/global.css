@@ -1,0 +1,15 @@
+html,
+body {
+  background-color: #000000;
+  background-image: url('/bg-character.png');
+  background-size: 45%;
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Make React Native Web root containers transparent so body bg shows through */
+#root,
+body > div:first-child {
+  background: transparent !important;
+}

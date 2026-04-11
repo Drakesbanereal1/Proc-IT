@@ -5,6 +5,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '../hooks/use-color-scheme';
 import { PROC_COLORS } from '../constants/procs';
+import './global.css';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -14,7 +15,7 @@ const AppDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: '#000000',
+    background: 'transparent',
     primary: PROC_COLORS.yellow,
     card: '#111827',
     text: '#FFFFFF',
