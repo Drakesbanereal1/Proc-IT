@@ -25,10 +25,6 @@ interface WS {
   properties: SCProp[];
 }
 
-interface SelectedWS {
-  weaponType: string;
-  ws: WS;
-}
 
 // ─── SKILLCHAIN COMBINATION TABLE ───────────────────────────────────────────
 // Source: bg-wiki.com/ffxi/Skillchain
