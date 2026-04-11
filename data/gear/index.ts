@@ -22,6 +22,8 @@ export { SHIELDS } from './shields';
 export { ARMOR } from './armor';
 export { ACCESSORIES } from './accessories';
 export { REFORGED } from './reforged';
+export { INSTRUMENTS } from './instruments';
+export { ODYSSEY } from './odyssey';
 export { JOB_PROFILES } from './jobs';
 export type { JobProfile } from './jobs';
 export { JOB_WEIGHT_OVERRIDES } from './compareProfiles';

@@ -159,6 +159,9 @@ export default function GearChecker() {
   const [itemB, setItemB] = useState<GearItem | null>(null);
   const [explanation, setExplanation] = useState<string | null>(null);
 
+  // Instruments are in slot "range" but should not be scored as Ranged
+  const effectiveMode: CompareMode = (slot === 'range' && job === 'BRD') ? 'Support' : mode;
+
   const candidates = job && slot ? filterByJobAndSlot(job, slot) : [];
   const diffs = itemA && itemB ? compareItems(itemA, itemB) : [];
 
@@ -169,8 +172,8 @@ export default function GearChecker() {
 
   const handleExplain = useCallback(() => {
     if (!itemA || !itemB) return;
-    setExplanation(generateExplanation(itemA, itemB, mode, diffs, job ?? undefined));
-  }, [itemA, itemB, mode, diffs]);
+    setExplanation(generateExplanation(itemA, itemB, effectiveMode, diffs, job ?? undefined));
+  }, [itemA, itemB, effectiveMode, diffs, job]);
 
   const reset = () => {
     setItemA(null); setItemB(null);
@@ -204,9 +207,10 @@ export default function GearChecker() {
           <Text style={styles.sectionLabel}>
             Items for {job} / {SLOTS.find(s => s.value === slot)?.label}
             {' '}— tap to pick A then B
+            {effectiveMode !== mode ? ` (scoring as ${effectiveMode})` : ''}
           </Text>
           {candidates
-            .sort((a, b) => scoreItem(b, mode, job ?? undefined) - scoreItem(a, mode, job ?? undefined))
+            .sort((a, b) => scoreItem(b, effectiveMode, job ?? undefined) - scoreItem(a, effectiveMode, job ?? undefined))
             .map(item => {
               const isA = itemA?.id === item.id;
               const isB = itemB?.id === item.id;
@@ -255,7 +259,7 @@ export default function GearChecker() {
 
           {/* Explain button */}
           <TouchableOpacity style={styles.explainBtn} onPress={handleExplain}>
-            <Text style={styles.explainBtnText}>Explain: Which is better for {mode}?</Text>
+            <Text style={styles.explainBtnText}>Explain: Which is better for {effectiveMode}?</Text>
           </TouchableOpacity>
 
           {explanation && (

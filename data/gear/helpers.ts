@@ -14,6 +14,8 @@ import { SHIELDS } from './shields';
 import { ARMOR } from './armor';
 import { ACCESSORIES } from './accessories';
 import { REFORGED } from './reforged';
+import { INSTRUMENTS } from './instruments';
+import { ODYSSEY } from './odyssey';
 import { JOB_WEIGHT_OVERRIDES } from './compareProfiles';
 
 // ─── Master dataset ───────────────────────────────────────────────────────────
@@ -24,6 +26,8 @@ export const ALL_GEAR: GearItem[] = [
   ...ARMOR,
   ...ACCESSORIES,
   ...REFORGED,
+  ...INSTRUMENTS,
+  ...ODYSSEY,
 ];
 
 // ─── Filtering ────────────────────────────────────────────────────────────────

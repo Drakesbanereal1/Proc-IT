@@ -33,8 +33,10 @@ export type WeaponType =
   | "Staff"
   | "Archery"
   | "Marksmanship"
+  | "Crossbow"
   | "Throwing"
-  | "Shield";
+  | "Shield"
+  | "Instrument";
 
 export type JobCode =
   | "WAR" | "MNK" | "WHM" | "BLM" | "RDM" | "THF"
@@ -73,11 +75,13 @@ export type ItemSource =
   | "Ambuscade"
   | "Escha"
   | "Sortie"
+  | "Odyssey"
   | "Dynamis"
   | "Voidwatch"
   | "Abyssea"
   | "Crafted"
   | "Domain Invasion"
+  | "Abjuration"
   | "Various";
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
@@ -256,6 +260,14 @@ export interface GearItem {
   tags?: string[];
   /** Whether this is a recommended comparison/endgame piece */
   endgame?: boolean;
+  /** True for BRD instruments (slot=range but scored differently) */
+  isInstrument?: boolean;
+  /** Armor set name for grouping (e.g. "Nyame", "Sakpata", "Turms") */
+  setName?: string;
+  /** Job-exclusive — only one job can use this despite jobs array */
+  jobExclusive?: boolean;
+  /** Can be augmented (Odyssey, Reforged, etc.) */
+  augmentable?: boolean;
 }
 
 // ─── Compare result ───────────────────────────────────────────────────────────
