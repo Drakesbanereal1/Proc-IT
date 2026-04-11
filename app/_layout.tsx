@@ -24,7 +24,7 @@ const AppDarkTheme = {
 };
 
 // Resolve the asset URI so we can pass it to CSS
-const bgAsset = require('../assets/images/runefencer.jpg');
+const bgAsset = require('../assets/images/bg-character.png');
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
