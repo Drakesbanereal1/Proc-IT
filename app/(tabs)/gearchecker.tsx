@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
-  ActivityIndicator, Platform,
 } from 'react-native';
 import {
-  filterByJobAndSlot, compareItems, scoreItem,
+  filterByJobAndSlot, compareItems, scoreItem, generateExplanation,
   type GearItem, type GearSlot, type JobCode, type CompareMode, type StatDiff,
 } from '../../data/gear';
 
@@ -52,25 +51,6 @@ function statLabel(stat: string): string {
     treasureHunter: 'TH',
   };
   return map[stat] ?? stat;
-}
-
-async function fetchExplanation(
-  itemA: GearItem, itemB: GearItem, job: JobCode, mode: CompareMode, diffs: StatDiff[]
-): Promise<string> {
-  const res = await fetch('/.netlify/functions/explain-gear', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      itemA: { name: itemA.name, stats: itemA.stats, source: itemA.source, slot: itemA.slot },
-      itemB: { name: itemB.name, stats: itemB.stats, source: itemB.source, slot: itemB.slot },
-      job,
-      mode,
-      diffs,
-    }),
-  });
-  if (!res.ok) throw new Error('Explanation request failed');
-  const data = await res.json();
-  return data.explanation as string;
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -165,8 +145,6 @@ export default function GearChecker() {
   const [itemA, setItemA] = useState<GearItem | null>(null);
   const [itemB, setItemB] = useState<GearItem | null>(null);
   const [explanation, setExplanation] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const candidates = job && slot ? filterByJobAndSlot(job, slot) : [];
   const diffs = itemA && itemB ? compareItems(itemA, itemB) : [];
@@ -176,24 +154,14 @@ export default function GearChecker() {
     if (!itemB && item.id !== itemA.id) { setItemB(item); return; }
   }, [itemA, itemB]);
 
-  const handleExplain = useCallback(async () => {
-    if (!itemA || !itemB || !job) return;
-    setLoading(true);
-    setError(null);
-    setExplanation(null);
-    try {
-      const text = await fetchExplanation(itemA, itemB, job, mode, diffs);
-      setExplanation(text);
-    } catch {
-      setError('Could not reach explanation service. Check your connection or try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [itemA, itemB, job, mode, diffs]);
+  const handleExplain = useCallback(() => {
+    if (!itemA || !itemB) return;
+    setExplanation(generateExplanation(itemA, itemB, mode, diffs));
+  }, [itemA, itemB, mode, diffs]);
 
   const reset = () => {
     setItemA(null); setItemB(null);
-    setExplanation(null); setError(null);
+    setExplanation(null);
   };
 
   return (
@@ -272,19 +240,10 @@ export default function GearChecker() {
             <DiffTable diffs={diffs} nameA={itemA.name} nameB={itemB.name} />
           )}
 
-          {/* AI Explain button */}
-          <TouchableOpacity
-            style={[styles.explainBtn, loading && styles.explainBtnDisabled]}
-            onPress={handleExplain}
-            disabled={loading}
-          >
-            {loading
-              ? <ActivityIndicator color="#000" />
-              : <Text style={styles.explainBtnText}>Ask Claude: Which is better for {mode}?</Text>
-            }
+          {/* Explain button */}
+          <TouchableOpacity style={styles.explainBtn} onPress={handleExplain}>
+            <Text style={styles.explainBtnText}>Explain: Which is better for {mode}?</Text>
           </TouchableOpacity>
-
-          {error && <Text style={styles.errorText}>{error}</Text>}
 
           {explanation && (
             <View style={styles.explanationBox}>
@@ -358,10 +317,7 @@ const styles = StyleSheet.create({
   tieText: { color: C.muted },
 
   explainBtn: { backgroundColor: C.yellow, borderRadius: 8, padding: 14, alignItems: 'center', marginBottom: 12 },
-  explainBtnDisabled: { opacity: 0.6 },
   explainBtnText: { color: '#000', fontWeight: '700', fontSize: 15 },
-
-  errorText: { color: C.red, marginBottom: 12 },
 
   explanationBox: { backgroundColor: '#1C2128', borderRadius: 8, padding: 16, borderWidth: 1, borderColor: C.border },
   explanationLabel: { color: C.yellow, fontWeight: '700', marginBottom: 8, fontSize: 13 },

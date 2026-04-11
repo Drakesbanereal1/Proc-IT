@@ -33,6 +33,7 @@ export {
   compareItems,
   scoreItem,
   getBestGear,
+  generateExplanation,
   getItemById,
   getItemByName,
   allSlots,
