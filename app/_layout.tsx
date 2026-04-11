@@ -1,7 +1,8 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
+import { Image, Platform, View, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '../hooks/use-color-scheme';
@@ -17,21 +18,38 @@ const AppDarkTheme = {
     ...DarkTheme.colors,
     background: 'transparent',
     primary: PROC_COLORS.yellow,
-    card: '#111827',
+    card: 'rgba(17, 24, 39, 0.82)',
     text: '#FFFFFF',
   },
 };
 
+// Resolve the asset URI so we can pass it to CSS
+const bgAsset = require('../assets/images/runefencer.jpg');
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const uri = Image.resolveAssetSource(bgAsset).uri;
+    const style = document.createElement('style');
+    style.id = 'runefencer-bg';
+    style.innerHTML = `
+      html, body, #root {
+        background-image: url('${uri}') !important;
+        background-size: cover !important;
+        background-position: right center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+        background-color: #000 !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => { style.remove(); };
+  }, []);
+
   return (
-    <ImageBackground
-      source={require('../assets/images/runefencer.jpg')}
-      style={styles.bg}
-      imageStyle={styles.bgImage}
-      resizeMode="cover"
-    >
+    <View style={styles.root}>
       <ThemeProvider value={colorScheme === 'dark' ? AppDarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -42,18 +60,13 @@ export default function RootLayout() {
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  bg: {
+  root: {
     flex: 1,
-    backgroundColor: '#000000',
-  },
-  bgImage: {
-    opacity: 0.40,
-    width: '100%',
-    height: '100%',
+    backgroundColor: 'transparent',
   },
 });
