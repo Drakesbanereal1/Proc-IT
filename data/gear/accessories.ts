@@ -1,0 +1,260 @@
+import type { GearItem } from './types';
+
+/**
+ * Curated endgame accessory dataset — Neck, Waist, Back, Earrings, Rings.
+ * Reference:
+ *   https://www.bg-wiki.com/ffxi/Category:Neck
+ *   https://www.bg-wiki.com/ffxi/Category:Waist
+ *   https://www.bg-wiki.com/ffxi/Category:Back
+ *   https://www.bg-wiki.com/ffxi/Category:Earrings
+ *   https://www.bg-wiki.com/ffxi/Category:Rings
+ */
+export const ACCESSORIES: GearItem[] = [
+
+  // ── NECK ────────────────────────────────────────────────────────────────────
+
+  {
+    id: "fotia-gorget",
+    name: "Fotia Gorget",
+    category: "accessory", slot: "neck",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","BRD","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 72, stats: { weaponSkillDamage: 4, tpBonus: 500 },
+    source: "Various", endgame: true,
+    tags: ["ws", "tp bonus", "melee neck"],
+  },
+  {
+    id: "loricate-torque-p1",
+    name: "Loricate Torque +1",
+    category: "accessory", slot: "neck",
+    jobs: ["WAR","MNK","WHM","BLM","RDM","THF","PLD","DRK","BST","BRD","RNG",
+           "SAM","NIN","DRG","SMN","BLU","COR","PUP","DNC","SCH","GEO","RUN"],
+    level: 99, upgradeTier: "+1",
+    stats: { dt: 6, pdt: 3, mdt: 3 },
+    source: "Various", endgame: true,
+    tags: ["tank", "dt", "neck"],
+  },
+  {
+    id: "lissome-necklace",
+    name: "Lissome Necklace",
+    category: "accessory", slot: "neck",
+    jobs: ["WAR","MNK","THF","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99,
+    stats: { dex: 3, accuracy: 7, attack: 5 },
+    source: "Various", endgame: true,
+    tags: ["melee", "neck"],
+  },
+  {
+    id: "sanctity-necklace",
+    name: "Sanctity Necklace",
+    category: "accessory", slot: "neck",
+    jobs: ["WHM","BLM","RDM","BRD","SMN","BLU","SCH","GEO"],
+    level: 99,
+    stats: { mp: 30, magicAccuracy: 10, magicAttackBonus: 5 },
+    source: "Various", endgame: true,
+    tags: ["mage", "neck"],
+  },
+  {
+    id: "combatants-torque",
+    name: "Combatant's Torque",
+    category: "accessory", slot: "neck",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","BRD","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99,
+    stats: { accuracy: 15, attack: 10, storeTP: 4 },
+    source: "Various", endgame: true,
+    tags: ["tp", "melee", "neck"],
+  },
+
+  // ── WAIST ───────────────────────────────────────────────────────────────────
+
+  {
+    id: "fotia-belt",
+    name: "Fotia Belt",
+    category: "accessory", slot: "waist",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","BRD","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 72, stats: { weaponSkillDamage: 4, tpBonus: 500 },
+    source: "Various", endgame: true,
+    tags: ["ws", "tp bonus", "melee waist"],
+  },
+  {
+    id: "ioskeha-belt-p1",
+    name: "Ioskeha Belt +1",
+    category: "accessory", slot: "waist",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99, upgradeTier: "+1",
+    stats: { str: 8, dex: 8, accuracy: 10, attack: 25 },
+    source: "Escha", endgame: true,
+    tags: ["escha", "melee", "dd waist"],
+  },
+  {
+    id: "kentarch-belt-p1",
+    name: "Kentarch Belt +1",
+    category: "accessory", slot: "waist",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99, upgradeTier: "+1",
+    stats: { str: 6, dex: 6, accuracy: 15, attack: 15, storeTP: 6 },
+    source: "Escha", endgame: true,
+    tags: ["escha", "melee", "tp waist"],
+  },
+  {
+    id: "eschan-stone",
+    name: "Eschan Stone",
+    category: "accessory", slot: "waist",
+    jobs: ["WAR","MNK","WHM","BLM","RDM","THF","PLD","DRK","BST","BRD","RNG",
+           "SAM","NIN","DRG","SMN","BLU","COR","PUP","DNC","SCH","GEO","RUN"],
+    level: 99,
+    stats: { accuracy: 15, magicAccuracy: 15 },
+    source: "Escha", endgame: true,
+    tags: ["escha", "versatile", "waist"],
+  },
+
+  // ── BACK ────────────────────────────────────────────────────────────────────
+
+  {
+    id: "rosmerta-cape",
+    name: "Rosmerta's Cape",
+    category: "accessory", slot: "back",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","BRD","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99,
+    stats: { str: 30, dex: 20, accuracy: 20, attack: 20 },
+    source: "Abyssea", endgame: true,
+    tags: ["abyssea", "melee", "back"],
+  },
+  {
+    id: "camulus-mantle",
+    name: "Camulus's Mantle",
+    category: "accessory", slot: "back",
+    jobs: ["RNG","COR"],
+    level: 99,
+    stats: { agi: 30, rangedAccuracy: 20, rangedAttack: 20, rangedStoreTP: 10 },
+    source: "Abyssea", endgame: true,
+    tags: ["abyssea", "ranged", "back"],
+  },
+  {
+    id: "lugh-cape",
+    name: "Lugh's Cape",
+    category: "accessory", slot: "back",
+    jobs: ["WHM","BLM","RDM","BRD","SMN","SCH","GEO","BLU"],
+    level: 99,
+    stats: { int: 30, mnd: 20, magicAccuracy: 20, magicAttackBonus: 10 },
+    source: "Abyssea", endgame: true,
+    tags: ["abyssea", "mage", "back"],
+  },
+  {
+    id: "ogma-cape",
+    name: "Ogma's Cape",
+    category: "accessory", slot: "back",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99,
+    stats: { str: 20, dex: 20, accuracy: 20, attack: 10, haste: 10 },
+    source: "Abyssea", endgame: true,
+    tags: ["abyssea", "haste", "melee back"],
+  },
+
+  // ── EARRINGS ─────────────────────────────────────────────────────────────────
+
+  {
+    id: "moonshade-earring",
+    name: "Moonshade Earring",
+    category: "accessory", slot: "left_ear",
+    jobs: ["WAR","MNK","WHM","BLM","RDM","THF","PLD","DRK","BST","BRD","RNG",
+           "SAM","NIN","DRG","SMN","BLU","COR","PUP","DNC","SCH","GEO","RUN"],
+    level: 99,
+    stats: { hp: 25, tpBonus: 250, accuracy: 4 },
+    source: "Various", endgame: true,
+    tags: ["ws", "tp bonus", "ear"],
+  },
+  {
+    id: "sherida-earring",
+    name: "Sherida Earring",
+    category: "accessory", slot: "left_ear",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99,
+    stats: { str: 5, dex: 5, vit: 5, agi: 5, accuracy: 5, attack: 5, storeTP: 5 },
+    source: "Various", endgame: true,
+    tags: ["melee", "tp", "ear"],
+  },
+  {
+    id: "lugra-earring-p1",
+    name: "Lugra Earring +1",
+    category: "accessory", slot: "left_ear",
+    jobs: ["WHM","BLM","RDM","BRD","SMN","BLU","SCH","GEO"],
+    level: 99, upgradeTier: "+1",
+    stats: { mp: 55, magicAccuracy: 5, magicAttackBonus: 8 },
+    source: "Escha", endgame: true,
+    tags: ["escha", "mage", "ear"],
+  },
+  {
+    id: "telos-earring",
+    name: "Telos Earring",
+    category: "accessory", slot: "right_ear",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99,
+    stats: { accuracy: 10, attack: 5, storeTP: 3 },
+    source: "Escha", endgame: true,
+    tags: ["escha", "melee", "ear"],
+  },
+  {
+    id: "brutal-earring",
+    name: "Brutal Earring",
+    category: "accessory", slot: "right_ear",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 75,
+    stats: { attack: 4, storeTP: 4, critRate: 1 },
+    source: "Various", endgame: true,
+    tags: ["melee", "tp", "ear"],
+  },
+
+  // ── RINGS ────────────────────────────────────────────────────────────────────
+
+  {
+    id: "chirich-ring-p1",
+    name: "Chirich Ring +1",
+    category: "accessory", slot: "left_ring",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99, upgradeTier: "+1",
+    stats: { str: 6, dex: 6, accuracy: 10, storeTP: 6 },
+    source: "Escha", endgame: true,
+    tags: ["escha", "melee", "tp ring"],
+  },
+  {
+    id: "defending-ring",
+    name: "Defending Ring",
+    category: "accessory", slot: "left_ring",
+    jobs: ["WAR","MNK","WHM","BLM","RDM","THF","PLD","DRK","BST","BRD","RNG",
+           "SAM","NIN","DRG","SMN","BLU","COR","PUP","DNC","SCH","GEO","RUN"],
+    level: 70,
+    stats: { dt: 10, pdt: 5, mdt: 5 },
+    source: "Various", endgame: true,
+    tags: ["tank", "dt", "ring"],
+  },
+  {
+    id: "moonbeam-ring",
+    name: "Moonbeam Ring",
+    category: "accessory", slot: "left_ring",
+    jobs: ["WHM","BLM","RDM","BRD","SMN","BLU","SCH","GEO"],
+    level: 99,
+    stats: { mp: 30, magicAccuracy: 5, fastCast: 4 },
+    source: "Escha", endgame: true,
+    tags: ["escha", "mage", "ring"],
+  },
+  {
+    id: "epona-ring",
+    name: "Epona's Ring",
+    category: "accessory", slot: "right_ring",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 89,
+    stats: { dex: 3, str: 3, accuracy: 3, storeTP: 5, subtleBlow: 5 },
+    source: "Various", endgame: true,
+    tags: ["melee", "tp", "ring"],
+  },
+  {
+    id: "petrov-ring",
+    name: "Petrov Ring",
+    category: "accessory", slot: "right_ring",
+    jobs: ["WAR","MNK","THF","PLD","DRK","BST","RNG","SAM","NIN","DRG","BLU","COR","PUP","DNC","RUN"],
+    level: 99,
+    stats: { str: 4, dex: 4, attack: 8, storeTP: 4 },
+    source: "Various", endgame: true,
+    tags: ["melee", "tp", "ring"],
+  },
+];
