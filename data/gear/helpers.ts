@@ -176,13 +176,18 @@ const MODE_WEIGHTS: Record<CompareMode, Partial<Record<keyof GearStats, number>>
 
 /**
  * Score a single item for a given compare mode.
- * Useful for sorting a list by "best for TP" etc.
+ *
+ * Mode weights express priority — higher weight = more important for that playstyle.
+ * Any stat actually present on the item but NOT explicitly weighted still contributes
+ * at a base weight of 1, so no real stat value is ever silently ignored.
  */
 export function scoreItem(item: GearItem, mode: CompareMode): number {
-  const weights = MODE_WEIGHTS[mode];
+  const weights = MODE_WEIGHTS[mode] as Record<string, number>;
   return NUMERIC_STATS.reduce((total, stat) => {
-    const weight = (weights as Record<string, number>)[stat] ?? 0;
-    const value = (item.stats[stat] as number | undefined) ?? 0;
+    const value = (item.stats[stat as keyof GearStats] as number | undefined) ?? 0;
+    if (value === 0) return total;
+    // Use explicit weight if defined, otherwise fall back to 1 so the stat still counts
+    const weight = weights[stat] ?? 1;
     return total + weight * value;
   }, 0);
 }
