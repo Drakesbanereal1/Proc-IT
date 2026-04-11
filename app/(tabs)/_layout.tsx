@@ -106,6 +106,15 @@ export default function DrawerLayout() {
           ),
         }}
       />
+      <Drawer.Screen
+        name="gearchecker"
+        options={{
+          title: "Gear Checker",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="shield-checkmark" size={size} color={color} />
+          ),
+        }}
+      />
        <Drawer.Screen
         name="about"
         options={{

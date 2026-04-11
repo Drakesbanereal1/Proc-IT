@@ -11,7 +11,9 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0",
     "@expo/vector-icons": "^15.0.3",
+    "@netlify/functions": "^5.2.0",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/drawer": "^7.5.0",
     "@react-navigation/elements": "^2.6.3",
