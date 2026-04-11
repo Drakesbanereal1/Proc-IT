@@ -27,7 +27,7 @@ export default function RootLayout() {
 
   return (
     <ImageBackground
-      source={require('../assets/images/bg-character.png')}
+      source={require('../assets/images/runefencer.jpg')}
       style={styles.bg}
       imageStyle={styles.bgImage}
       resizeMode="cover"
