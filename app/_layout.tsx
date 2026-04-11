@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   bgImage: {
-    opacity: 0.18,
+    opacity: 0.40,
     width: '100%',
     height: '100%',
   },
