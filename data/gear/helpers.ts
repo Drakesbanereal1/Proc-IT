@@ -73,13 +73,33 @@ export function searchGear(query: string): GearItem[] {
 // ─── Comparison ───────────────────────────────────────────────────────────────
 
 const NUMERIC_STATS: (keyof GearStats)[] = [
+  // Base
   "hp","mp","str","dex","vit","agi","int","mnd","chr",
-  "accuracy","attack","rangedAccuracy","rangedAttack",
-  "magicAccuracy","magicAttackBonus","defense","evasion","magicEvasion",
-  "haste","storeTP","dualWield","fastCast","dt","pdt","mdt",
-  "enmity","curePotency","weaponSkillDamage","tpBonus",
-  "critRate","critDamage","spellInterruptDown","rangedStoreTP",
-  "snapShot","rapidShot","subtleBlow","treasureHunter",
+  // Melee
+  "accuracy","attack",
+  // Ranged
+  "rangedAccuracy","rangedAttack","rangedStoreTP","snapShot","rapidShot",
+  // Magic offense
+  "magicAccuracy","magicAttackBonus","magicBurstDamage","magicBurstDamageII","magicDefenseBonus",
+  // Multi-attack
+  "doubleAttack","tripleAttack","quadAttack",
+  // TP / WS
+  "haste","storeTP","dualWield","tpBonus","weaponSkillDamage","skillchainDamage",
+  // Crit
+  "critRate","critDamage",
+  // Subtle Blow
+  "subtleBlow","subtleBlowII",
+  // Defense
+  "defense","evasion","magicEvasion","dt","pdt","mdt",
+  "guard","parry","counter","counterDamage","spellInterruptDown","enmity",
+  // Magic support
+  "fastCast","conserveMP","curePotency","curePotencyReceived",
+  // Job-specific
+  "kickAttacks","drainBonus","aspirBonus",
+  "songDuration","singingSkill","instrumentSkill",
+  "geomancySkill","indiDuration","blueMagicSkill","quickDrawBonus",
+  // Utility
+  "treasureHunter",
 ];
 
 /**
@@ -106,24 +126,50 @@ export function compareItems(a: GearItem, b: GearItem): StatDiff[] {
  */
 const MODE_WEIGHTS: Record<CompareMode, Partial<Record<keyof GearStats, number>>> = {
   TP: {
-    accuracy: 3, attack: 2, storeTP: 4, haste: 5, dualWield: 3, str: 1, dex: 1,
+    // Haste and multi-attack are king for TP building
+    haste: 5, storeTP: 4, doubleAttack: 4, tripleAttack: 5, quadAttack: 6,
+    dualWield: 3, accuracy: 3, attack: 2, str: 1, dex: 1,
+    rangedStoreTP: 3, snapShot: 3,
   },
   WS: {
-    str: 3, dex: 2, weaponSkillDamage: 5, tpBonus: 4, accuracy: 2, attack: 3,
-    critRate: 3, critDamage: 3,
+    // Weapon skill damage, TP bonus, crit, and primary attack stats
+    weaponSkillDamage: 5, tpBonus: 4, critRate: 3, critDamage: 3,
+    str: 3, dex: 2, attack: 3, accuracy: 2,
+    skillchainDamage: 3,
   },
   Tank: {
-    hp: 3, vit: 2, defense: 2, dt: 5, pdt: 4, mdt: 4, enmity: 3,
-    magicEvasion: 2, evasion: 2, spellInterruptDown: 2,
+    // Mitigation first, then enmity, then defensive skills
+    dt: 5, pdt: 4, mdt: 4, enmity: 4,
+    hp: 3, vit: 2, defense: 2, evasion: 2, magicEvasion: 2,
+    spellInterruptDown: 2, parry: 3, guard: 2, counter: 2,
+    magicDefenseBonus: 2,
   },
   Idle: {
-    hp: 4, mp: 3, dt: 5, pdt: 4, mdt: 4, haste: 3, defense: 2,
+    // DT and HP for resting/downtime, some haste for movement
+    dt: 5, pdt: 4, mdt: 4, hp: 4, mp: 3, haste: 2, defense: 2,
+    magicDefenseBonus: 2,
   },
   MagicAccuracy: {
-    magicAccuracy: 5, int: 3, mnd: 3, magicAttackBonus: 3, fastCast: 2,
+    // Landing spells on resistant targets
+    magicAccuracy: 5, int: 3, mnd: 3, magicAttackBonus: 3,
+    fastCast: 2, blueMagicSkill: 4,
   },
   FastCast: {
-    fastCast: 5, haste: 3, spellInterruptDown: 2, magicAccuracy: 1,
+    // Reducing cast/recast time
+    fastCast: 5, haste: 3, spellInterruptDown: 2, conserveMP: 2,
+  },
+  Ranged: {
+    // RNG / COR TP and accuracy
+    rangedAccuracy: 5, rangedAttack: 4, rangedStoreTP: 3,
+    snapShot: 4, rapidShot: 3, agi: 2, dex: 2,
+    weaponSkillDamage: 3, critRate: 2,
+  },
+  Support: {
+    // BRD / GEO / WHM support value
+    songDuration: 5, singingSkill: 4, instrumentSkill: 4,
+    geomancySkill: 5, indiDuration: 4,
+    curePotency: 4, curePotencyReceived: 3, conserveMP: 3,
+    fastCast: 3, chr: 2, mnd: 2,
   },
   All: Object.fromEntries(NUMERIC_STATS.map(s => [s, 1])) as Partial<Record<keyof GearStats, number>>,
 };
@@ -161,25 +207,40 @@ export function getBestGear(
 
 const STAT_LABELS: Partial<Record<keyof GearStats, string>> = {
   hp: 'HP', mp: 'MP', str: 'STR', dex: 'DEX', vit: 'VIT', agi: 'AGI',
-  int: 'INT', mnd: 'MND', chr: 'CHR', accuracy: 'Accuracy', attack: 'Attack',
-  rangedAccuracy: 'Ranged Accuracy', rangedAttack: 'Ranged Attack',
-  magicAccuracy: 'Magic Accuracy', magicAttackBonus: 'MAB',
-  defense: 'Defense', evasion: 'Evasion', magicEvasion: 'Magic Evasion',
+  int: 'INT', mnd: 'MND', chr: 'CHR',
+  accuracy: 'Accuracy', attack: 'Attack',
+  rangedAccuracy: 'R.Accuracy', rangedAttack: 'R.Attack',
+  rangedStoreTP: 'R.Store TP', snapShot: 'Snapshot%', rapidShot: 'Rapid Shot%',
+  magicAccuracy: 'M.Accuracy', magicAttackBonus: 'MAB',
+  magicBurstDamage: 'MB Damage%', magicBurstDamageII: 'MB Damage II%',
+  magicDefenseBonus: 'MDB',
+  doubleAttack: 'Double Attack%', tripleAttack: 'Triple Attack%', quadAttack: 'Quad Attack%',
   haste: 'Haste%', storeTP: 'Store TP', dualWield: 'Dual Wield',
-  fastCast: 'Fast Cast%', dt: 'DT%', pdt: 'PDT%', mdt: 'MDT%',
-  enmity: 'Enmity', curePotency: 'Cure Potency%',
-  weaponSkillDamage: 'WSD%', tpBonus: 'TP Bonus',
+  tpBonus: 'TP Bonus', weaponSkillDamage: 'WSD%', skillchainDamage: 'SC Damage%',
   critRate: 'Crit Rate%', critDamage: 'Crit Dmg%',
-  subtleBlow: 'Subtle Blow%', treasureHunter: 'Treasure Hunter',
+  subtleBlow: 'Subtle Blow%', subtleBlowII: 'Subtle Blow II%',
+  defense: 'Defense', evasion: 'Evasion', magicEvasion: 'M.Evasion',
+  dt: 'DT%', pdt: 'PDT%', mdt: 'MDT%',
+  guard: 'Guard', parry: 'Parry', counter: 'Counter%', counterDamage: 'Counter Dmg',
+  spellInterruptDown: 'Spell Interrupt↓%', enmity: 'Enmity',
+  fastCast: 'Fast Cast%', conserveMP: 'Conserve MP%',
+  curePotency: 'Cure Potency%', curePotencyReceived: 'Cure Rcvd%',
+  kickAttacks: 'Kick Attacks', drainBonus: 'Drain Bonus', aspirBonus: 'Aspir Bonus',
+  songDuration: 'Song Duration', singingSkill: 'Singing Skill', instrumentSkill: 'Instrument Skill',
+  geomancySkill: 'Geomancy Skill', indiDuration: 'Indi Duration',
+  blueMagicSkill: 'BLU Magic Skill', quickDrawBonus: 'Quick Draw Bonus',
+  treasureHunter: 'Treasure Hunter',
 };
 
 const MODE_PURPOSE: Record<CompareMode, string> = {
-  TP:           'building TP quickly (Haste, Store TP, Accuracy)',
-  WS:           'weapon skill damage (WSD%, STR, TP Bonus)',
-  Tank:         'damage mitigation (DT%, PDT%, MDT%, Enmity)',
-  Idle:         'downtime survivability (DT%, HP, Haste)',
+  TP:           'building TP quickly (Haste, Multi-Attack, Store TP)',
+  WS:           'weapon skill damage (WSD%, TP Bonus, Crit, STR)',
+  Tank:         'damage mitigation (DT%, PDT%, MDT%, Enmity, Parry)',
+  Idle:         'downtime survivability (DT%, HP, MP)',
   MagicAccuracy:'landing spells on resistant targets (M.Acc, INT/MND, MAB)',
   FastCast:     'reducing spell cast/recast time (Fast Cast%, Haste)',
+  Ranged:       'ranged TP and accuracy (R.Acc, Snapshot, Rapid Shot, R.Store TP)',
+  Support:      'support effectiveness (Song Duration, Geomancy, Cure Potency)',
   All:          'overall balanced performance',
 };
 

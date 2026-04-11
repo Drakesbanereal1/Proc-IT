@@ -72,6 +72,7 @@ export interface WeaponStats {
 }
 
 export interface GearStats {
+  // ── Base attributes ──────────────────────────────────────────────────────
   hp?: number;
   mp?: number;
   str?: number;
@@ -81,48 +82,127 @@ export interface GearStats {
   int?: number;
   mnd?: number;
   chr?: number;
+
+  // ── Melee accuracy / damage ───────────────────────────────────────────────
   accuracy?: number;
   attack?: number;
+
+  // ── Ranged accuracy / damage ─────────────────────────────────────────────
   rangedAccuracy?: number;
   rangedAttack?: number;
+  /** Store TP from ranged attacks */
+  rangedStoreTP?: number;
+  /** Snap Shot % — reduces ranged attack animation delay */
+  snapShot?: number;
+  /** Rapid Shot % — chance to skip ranged attack delay entirely */
+  rapidShot?: number;
+
+  // ── Magic offense ─────────────────────────────────────────────────────────
   magicAccuracy?: number;
   magicAttackBonus?: number;
-  defense?: number;
-  evasion?: number;
-  magicEvasion?: number;
-  /** % haste (positive = faster) */
+  /** Magic Burst Damage % bonus */
+  magicBurstDamage?: number;
+  /** Magic Burst Damage II % bonus (stacks separately) */
+  magicBurstDamageII?: number;
+  /** Magic Defense Bonus — reduces magic damage taken */
+  magicDefenseBonus?: number;
+
+  // ── Multi-attack ──────────────────────────────────────────────────────────
+  /** Double Attack % chance */
+  doubleAttack?: number;
+  /** Triple Attack % chance */
+  tripleAttack?: number;
+  /** Quadruple Attack % chance */
+  quadAttack?: number;
+
+  // ── TP & weapon skill ─────────────────────────────────────────────────────
   haste?: number;
   storeTP?: number;
   dualWield?: number;
-  fastCast?: number;
-  /** Damage taken % reduction */
-  dt?: number;
-  /** Physical damage taken % reduction */
-  pdt?: number;
-  /** Magic damage taken % reduction */
-  mdt?: number;
-  enmity?: number;
-  curePotency?: number;
-  weaponSkillDamage?: number;
-  /** TP bonus on weapon skill */
+  /** TP bonus on weapon skill (e.g. Moonshade Earring +250) */
   tpBonus?: number;
-  /** Critical hit rate % */
+  /** Weapon Skill Damage % */
+  weaponSkillDamage?: number;
+  /** Skillchain Damage % */
+  skillchainDamage?: number;
+
+  // ── Critical hits ─────────────────────────────────────────────────────────
   critRate?: number;
-  /** Critical hit damage % */
   critDamage?: number;
+
+  // ── Subtle Blow ───────────────────────────────────────────────────────────
+  /** Subtle Blow % — reduces TP given to enemy on hit */
+  subtleBlow?: number;
+  /** Subtle Blow II % (stacks separately) */
+  subtleBlowII?: number;
+
+  // ── Defense / mitigation ─────────────────────────────────────────────────
+  defense?: number;
+  evasion?: number;
+  magicEvasion?: number;
+  /** Damage Taken % reduction (all) */
+  dt?: number;
+  /** Physical Damage Taken % reduction */
+  pdt?: number;
+  /** Magic Damage Taken % reduction */
+  mdt?: number;
+  /** Guard skill bonus (MNK) */
+  guard?: number;
+  /** Parry skill bonus (PLD/RUN/NIN) */
+  parry?: number;
+  /** Counter chance % (MNK/RUN) */
+  counter?: number;
+  /** Counter damage bonus */
+  counterDamage?: number;
   /** Spell interruption rate down % */
   spellInterruptDown?: number;
-  /** Store TP from ranged */
-  rangedStoreTP?: number;
-  /** Snap Shot % */
-  snapShot?: number;
-  /** Rapid Shot % */
-  rapidShot?: number;
-  /** Subtle Blow % */
-  subtleBlow?: number;
+  enmity?: number;
+
+  // ── Magic / support ───────────────────────────────────────────────────────
+  fastCast?: number;
+  /** Conserve MP % chance */
+  conserveMP?: number;
+  /** Cure Potency % bonus */
+  curePotency?: number;
+  /** Cure Potency Received % bonus */
+  curePotencyReceived?: number;
+
+  // ── Job-specific: MNK ────────────────────────────────────────────────────
+  /** Kick Attacks — adds hits to H2H combo */
+  kickAttacks?: number;
+
+  // ── Job-specific: DRK ────────────────────────────────────────────────────
+  /** Drain spell bonus damage */
+  drainBonus?: number;
+  /** Aspir spell bonus drain */
+  aspirBonus?: number;
+
+  // ── Job-specific: BRD ────────────────────────────────────────────────────
+  /** Song effect duration bonus (seconds or %) */
+  songDuration?: number;
+  /** Singing skill bonus */
+  singingSkill?: number;
+  /** Wind/String instrument skill bonus */
+  instrumentSkill?: number;
+
+  // ── Job-specific: GEO ────────────────────────────────────────────────────
+  /** Geomancy skill bonus */
+  geomancySkill?: number;
+  /** Indi-spell duration bonus */
+  indiDuration?: number;
+
+  // ── Job-specific: BLU ────────────────────────────────────────────────────
+  /** Blue Magic skill bonus */
+  blueMagicSkill?: number;
+
+  // ── Job-specific: COR ────────────────────────────────────────────────────
+  /** Quick Draw damage bonus */
+  quickDrawBonus?: number;
+
+  // ── Utility ───────────────────────────────────────────────────────────────
   /** Treasure Hunter tier added */
   treasureHunter?: number;
-  /** Raw additional stat text for augments / special effects */
+  /** Raw text for augments or special effects not captured above */
   notes?: string;
 }
 
@@ -169,4 +249,6 @@ export type CompareMode =
   | "Idle"
   | "MagicAccuracy"
   | "FastCast"
+  | "Ranged"
+  | "Support"
   | "All";

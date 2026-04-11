@@ -32,22 +32,35 @@ const SLOTS: { label: string; value: GearSlot }[] = [
   { label: 'Right Ring', value: 'right_ring' },
 ];
 
-const MODES: CompareMode[] = ['TP', 'WS', 'Tank', 'Idle', 'MagicAccuracy', 'FastCast'];
+const MODES: CompareMode[] = ['TP', 'WS', 'Tank', 'Idle', 'MagicAccuracy', 'FastCast', 'Ranged', 'Support'];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function statLabel(stat: string): string {
   const map: Record<string, string> = {
     hp: 'HP', mp: 'MP', str: 'STR', dex: 'DEX', vit: 'VIT', agi: 'AGI',
-    int: 'INT', mnd: 'MND', chr: 'CHR', accuracy: 'Accuracy', attack: 'Attack',
+    int: 'INT', mnd: 'MND', chr: 'CHR',
+    accuracy: 'Accuracy', attack: 'Attack',
     rangedAccuracy: 'R.Accuracy', rangedAttack: 'R.Attack',
+    rangedStoreTP: 'R.Store TP', snapShot: 'Snapshot%', rapidShot: 'Rapid Shot%',
     magicAccuracy: 'M.Accuracy', magicAttackBonus: 'MAB',
-    defense: 'DEF', evasion: 'Evasion', magicEvasion: 'M.Evasion',
+    magicBurstDamage: 'MB Damage%', magicBurstDamageII: 'MB Damage II%',
+    magicDefenseBonus: 'MDB',
+    doubleAttack: 'DA%', tripleAttack: 'TA%', quadAttack: 'QA%',
     haste: 'Haste%', storeTP: 'Store TP', dualWield: 'Dual Wield',
-    fastCast: 'Fast Cast%', dt: 'DT%', pdt: 'PDT%', mdt: 'MDT%',
-    enmity: 'Enmity', curePotency: 'Cure Potency%',
-    weaponSkillDamage: 'WSD%', tpBonus: 'TP Bonus', critRate: 'Crit Rate%',
-    critDamage: 'Crit Dmg%', subtleBlow: 'Subtle Blow%',
+    tpBonus: 'TP Bonus', weaponSkillDamage: 'WSD%', skillchainDamage: 'SC Dmg%',
+    critRate: 'Crit Rate%', critDamage: 'Crit Dmg%',
+    subtleBlow: 'Subtle Blow%', subtleBlowII: 'SB II%',
+    defense: 'DEF', evasion: 'Evasion', magicEvasion: 'M.Evasion',
+    dt: 'DT%', pdt: 'PDT%', mdt: 'MDT%',
+    guard: 'Guard', parry: 'Parry', counter: 'Counter%', counterDamage: 'Ctr Dmg',
+    spellInterruptDown: 'Spell Int↓%', enmity: 'Enmity',
+    fastCast: 'Fast Cast%', conserveMP: 'Conserve MP%',
+    curePotency: 'Cure Pot%', curePotencyReceived: 'Cure Rcvd%',
+    kickAttacks: 'Kick Atk', drainBonus: 'Drain+', aspirBonus: 'Aspir+',
+    songDuration: 'Song Dur', singingSkill: 'Singing', instrumentSkill: 'Instrument',
+    geomancySkill: 'Geomancy', indiDuration: 'Indi Dur',
+    blueMagicSkill: 'BLU Skill', quickDrawBonus: 'Quick Draw+',
     treasureHunter: 'TH',
   };
   return map[stat] ?? stat;
