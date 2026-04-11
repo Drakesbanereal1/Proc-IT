@@ -59,16 +59,7 @@ export const WEAPONS: GearItem[] = [
     stats: { str: 20, dex: 10, accuracy: 30, attack: 30, storeTP: 10 },
     tags: ["mythic", "h2h", "monk"],
   },
-  {
-    id: "tauret",
-    name: "Tauret",
-    category: "weapon", slot: "main", weaponType: "Hand-to-Hand",
-    jobs: ["MNK", "PUP"], level: 99, itemLevel: 119,
-    source: "Escha", endgame: true,
-    weapon: { damage: 84, delay: 480 },
-    stats: { str: 15, dex: 15, accuracy: 30, attack: 30, critRate: 5 },
-    tags: ["escha", "h2h"],
-  },
+  // Tauret was wrong — BGWiki: Dagger, Ambuscade, NOT H2H/Escha
 
   // ── Dagger ──────────────────────────────────────────────────────────────────
   {
@@ -208,11 +199,13 @@ export const WEAPONS: GearItem[] = [
     id: "naegling",
     name: "Naegling",
     category: "weapon", slot: "main", weaponType: "Sword",
-    jobs: ["WAR", "DNC", "NIN"], level: 99, itemLevel: 119,
-    source: "Escha", endgame: true,
+    jobs: ["WAR","RDM","THF","PLD","DRK","BST","BRD","RNG","NIN","DRG","BLU","COR","RUN"],
+    level: 99, itemLevel: 119,
+    source: "Ambuscade", endgame: true,
     weapon: { damage: 66, delay: 240 },
     stats: { str: 15, dex: 15, accuracy: 30, attack: 30, critRate: 5, critDamage: 5 },
-    tags: ["escha", "sword"],
+    tags: ["ambuscade", "sword"],
+    bgwikiUrl: "https://www.bg-wiki.com/ffxi/Naegling",
   },
 
   // ── Great Sword ──────────────────────────────────────────────────────────────
