@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import {
   ScrollView, Text, View, TouchableOpacity,
-  StyleSheet, Modal,
+  StyleSheet, Modal, TextInput,
 } from "react-native";
 
 // ─── TYPES ──────────────────────────────────────────────────────────────────
@@ -133,6 +133,10 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Evisceration",  level: 230,       properties: ["Gravitation", "Transfixion"] },
       { name: "Aeolian Edge",  level: "Quest",   properties: ["Scission", "Detonation", "Impaction"] },
       { name: "Exenterator",   level: "Aeonic",  properties: ["Light", "Fragmentation", "Scission"] },
+      { name: "Mercy Stroke",  level: "Relic",    properties: ["Compression", "Transfixion"] },
+      { name: "Mandalic Stab", level: "Mythic",   properties: ["Distortion", "Scission"] },
+      { name: "Rudra's Storm", level: "Empyrean", properties: ["Darkness", "Distortion", "Scission"] },
+      { name: "Aeneas Strike", level: "Prime",    properties: ["Light", "Fragmentation", "Scission"] },
     ],
   },
   {
@@ -146,7 +150,11 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Vorpal Blade",    level: 200,       properties: ["Scission", "Impaction"] },
       { name: "Swift Blade",     level: 225,       properties: ["Gravitation"] },
       { name: "Savage Blade",    level: "Quest",   properties: ["Fragmentation", "Scission"] },
-      { name: "Requiescat",      level: "Aeonic",  properties: ["Darkness", "Gravitation", "Scission"] },
+      { name: "Requiescat",        level: "Aeonic",  properties: ["Darkness", "Gravitation", "Scission"] },
+      { name: "Knights of Round",  level: "Relic",    properties: ["Light", "Fusion"] },
+      { name: "Death Blossom",     level: "Mythic",   properties: ["Fragmentation", "Reverberation"] },
+      { name: "Chant du Cygne",    level: "Empyrean", properties: ["Darkness", "Distortion", "Transfixion"] },
+      { name: "Caliburnus",        level: "Prime",    properties: ["Light", "Fusion", "Scission"] },
     ],
   },
   {
@@ -161,7 +169,10 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Spinning Slash",   level: 225,       properties: ["Fragmentation"] },
       { name: "Ground Strike",    level: "Quest",   properties: ["Fragmentation"] },
       { name: "Herculean Slash",  level: "Quest",   properties: ["Detonation", "Induration", "Impaction"] },
-      { name: "Resolution",       level: "Aeonic",  properties: ["Light", "Fragmentation", "Scission"] },
+      { name: "Resolution",        level: "Aeonic",  properties: ["Light", "Fragmentation", "Scission"] },
+      { name: "Scourge",           level: "Relic",    properties: ["Gravitation", "Distortion"] },
+      { name: "Torcleaver",        level: "Mythic",   properties: ["Distortion", "Impaction"] },
+      { name: "Epeolatry Strike",  level: "Prime",    properties: ["Light", "Fragmentation", "Scission"] },
     ],
   },
   {
@@ -175,7 +186,10 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Calamity",      level: 200,       properties: ["Scission", "Impaction"] },
       { name: "Mistral Axe",   level: 225,       properties: ["Fusion"] },
       { name: "Decimation",    level: "Quest",   properties: ["Fusion", "Reverberation"] },
-      { name: "Ruinator",      level: "Aeonic",  properties: ["Darkness", "Distortion", "Detonation"] },
+      { name: "Ruinator",          level: "Aeonic",  properties: ["Darkness", "Distortion", "Detonation"] },
+      { name: "Onslaught",         level: "Relic",    properties: ["Distortion"] },
+      { name: "Primal Rend",       level: "Mythic",   properties: ["Light", "Fragmentation", "Detonation"] },
+      { name: "Dolichenus Strike", level: "Prime",    properties: ["Darkness", "Distortion", "Detonation"] },
     ],
   },
   {
@@ -190,7 +204,11 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Full Break",     level: 225,       properties: ["Distortion"] },
       { name: "Steel Cyclone",  level: "Quest",   properties: ["Distortion", "Detonation"] },
       { name: "Fell Cleave",    level: "Quest",   properties: ["Scission", "Detonation"] },
-      { name: "Upheaval",       level: "Aeonic",  properties: ["Light", "Fusion", "Compression"] },
+      { name: "Upheaval",         level: "Aeonic",  properties: ["Light", "Fusion", "Compression"] },
+      { name: "Metatron Torment", level: "Relic",    properties: ["Fusion"] },
+      { name: "King's Justice",   level: "Mythic",   properties: ["Fusion", "Impaction"] },
+      { name: "Ukko's Fury",      level: "Empyrean", properties: ["Light", "Fusion", "Compression"] },
+      { name: "Helheim Strike",   level: "Prime",    properties: ["Darkness", "Gravitation", "Distortion"] },
     ],
   },
   {
@@ -206,7 +224,11 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Cross Reaper",     level: 225,       properties: ["Distortion"] },
       { name: "Spiral Hell",      level: "Quest",   properties: ["Distortion", "Scission"] },
       { name: "Infernal Scythe",  level: "Quest",   properties: ["Reverberation", "Compression"] },
-      { name: "Entropy",          level: "Aeonic",  properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Entropy",           level: "Aeonic",  properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Catastrophe",       level: "Relic",    properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Insurgency",        level: "Mythic",   properties: ["Distortion", "Scission"] },
+      { name: "Quietus",           level: "Empyrean", properties: ["Darkness", "Distortion", "Scission"] },
+      { name: "Apocalypse Strike", level: "Prime",    properties: ["Darkness", "Gravitation", "Reverberation"] },
     ],
   },
   {
@@ -222,7 +244,11 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Wheeling Thrust", level: 225,       properties: ["Fusion"] },
       { name: "Impulse Drive",   level: "Quest",   properties: ["Gravitation", "Induration"] },
       { name: "Sonic Thrust",    level: "Quest",   properties: ["Scission", "Transfixion"] },
-      { name: "Stardiver",       level: "Aeonic",  properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Stardiver",         level: "Aeonic",  properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Geirskogul",        level: "Relic",    properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Drakesbane",        level: "Mythic",   properties: ["Fusion", "Transfixion"] },
+      { name: "Camlann's Torment", level: "Empyrean", properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Gungnir Strike",    level: "Prime",    properties: ["Light", "Fusion", "Transfixion"] },
     ],
   },
   {
@@ -239,6 +265,10 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Blade: Ku",    level: "Quest",   properties: ["Gravitation", "Transfixion"] },
       { name: "Blade: Yu",    level: "Quest",   properties: ["Scission", "Reverberation"] },
       { name: "Blade: Shun",  level: "Aeonic",  properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Blade: Metsu", level: "Relic",    properties: ["Darkness", "Distortion", "Scission"] },
+      { name: "Blade: Kamu",  level: "Mythic",   properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Blade: Hi",    level: "Empyrean", properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Heishi Strike",level: "Prime",    properties: ["Light", "Fusion", "Impaction"] },
     ],
   },
   {
@@ -255,6 +285,10 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Tachi: Kasha",    level: "Quest",   properties: ["Fusion", "Compression"] },
       { name: "Tachi: Ageha",    level: "Quest",   properties: ["Compression", "Scission"] },
       { name: "Tachi: Shoha",    level: "Aeonic",  properties: ["Light", "Fragmentation", "Compression"] },
+      { name: "Tachi: Kaiten",   level: "Relic",    properties: ["Light", "Fragmentation", "Compression"] },
+      { name: "Tachi: Rana",     level: "Mythic",   properties: ["Darkness", "Distortion", "Reverberation"] },
+      { name: "Tachi: Fudo",     level: "Empyrean", properties: ["Light", "Fragmentation", "Compression"] },
+      { name: "Masamune Strike", level: "Prime",    properties: ["Darkness", "Gravitation", "Compression"] },
     ],
   },
   {
@@ -266,10 +300,14 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Skullbreaker",   level: 150,       properties: ["Induration", "Reverberation"] },
       { name: "True Strike",    level: 175,       properties: ["Detonation", "Impaction"] },
       { name: "Judgment",       level: 200,       properties: ["Impaction"] },
-      { name: "Hexa Strike",    level: 220,       properties: ["Fusion"] },
+
       { name: "Black Halo",     level: "Quest",   properties: ["Fragmentation", "Compression"] },
       { name: "Flash Nova",     level: "Quest",   properties: ["Reverberation", "Induration"] },
       { name: "Realmrazer",     level: "Aeonic",  properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Randgrith",      level: "Relic",    properties: ["Transfixion", "Reverberation"] },
+      { name: "Hexa Strike",    level: "Mythic",   properties: ["Fusion"] },
+      { name: "Dagan",          level: "Empyrean", properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Yagrush Strike", level: "Prime",    properties: ["Light", "Fusion", "Impaction"] },
     ],
   },
   {
@@ -284,7 +322,11 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Full Swing",    level: 200,       properties: ["Liquefaction", "Impaction"] },
       { name: "Retribution",   level: "Quest",   properties: ["Gravitation", "Reverberation"] },
       { name: "Cataclysm",     level: "Quest",   properties: ["Reverberation", "Compression"] },
-      { name: "Shattersoul",   level: "Aeonic",  properties: ["Darkness", "Gravitation", "Induration"] },
+      { name: "Shattersoul",      level: "Aeonic",  properties: ["Darkness", "Gravitation", "Induration"] },
+      { name: "Gate of Tartarus", level: "Relic",    properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Omniscience",      level: "Mythic",   properties: ["Darkness", "Gravitation", "Induration"] },
+      { name: "Myrkr",            level: "Empyrean", properties: ["Reverberation", "Compression"] },
+      { name: "Nirvana Strike",   level: "Prime",    properties: ["Darkness", "Gravitation", "Reverberation"] },
     ],
   },
   {
@@ -298,7 +340,10 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Arching Arrow",   level: 225,       properties: ["Fusion"] },
       { name: "Empyreal Arrow",  level: "Quest",   properties: ["Fusion", "Transfixion"] },
       { name: "Refulgent Arrow", level: "Quest",   properties: ["Reverberation", "Transfixion"] },
-      { name: "Apex Arrow",      level: "Aeonic",  properties: ["Light", "Fragmentation", "Transfixion"] },
+      { name: "Apex Arrow",         level: "Aeonic",  properties: ["Light", "Fragmentation", "Transfixion"] },
+      { name: "Namas Arrow",        level: "Relic",    properties: ["Fusion", "Transfixion"] },
+      { name: "Jishnu's Radiance",  level: "Empyrean", properties: ["Light", "Fusion", "Transfixion"] },
+      { name: "Gandiva Strike",     level: "Prime",    properties: ["Light", "Fusion", "Transfixion"] },
     ],
   },
   {
@@ -312,7 +357,11 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Heavy Shot",     level: 225,       properties: ["Fusion"] },
       { name: "Detonator",      level: "Quest",   properties: ["Fusion", "Transfixion"] },
       { name: "Numbing Shot",   level: "Quest",   properties: ["Induration", "Detonation", "Impaction"] },
-      { name: "Last Stand",     level: "Aeonic",  properties: ["Light", "Fusion", "Reverberation"] },
+      { name: "Last Stand",       level: "Aeonic",  properties: ["Light", "Fusion", "Reverberation"] },
+      { name: "Coronach",         level: "Relic",    properties: ["Darkness", "Distortion", "Reverberation"] },
+      { name: "Leaden Salute",    level: "Mythic",   properties: ["Darkness", "Gravitation", "Compression"] },
+      { name: "Wildfire",         level: "Empyrean", properties: ["Darkness", "Gravitation", "Fusion"] },
+      { name: "Fomalhaut Strike", level: "Prime",    properties: ["Darkness", "Distortion", "Reverberation"] },
     ],
   },
   {
@@ -430,10 +479,10 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
 // ─── UI CONSTANTS ────────────────────────────────────────────────────────────
 
 const LEVEL_COLORS: Record<number, string> = {
-  1: "#9CA3AF",  // gray
-  2: "#60A5FA",  // blue
-  3: "#FBBF24",  // gold
-  4: "#C084FC",  // purple
+  1: "#9CA3AF",
+  2: "#60A5FA",
+  3: "#FBBF24",
+  4: "#C084FC",
 };
 
 const LEVEL_BG: Record<number, string> = {
@@ -443,171 +492,226 @@ const LEVEL_BG: Record<number, string> = {
   4: "#2D1B4E",
 };
 
+const STAGE_DESCRIPTIONS: Record<number, string> = {
+  1: "Same-property pairs · single element burst",
+  2: "Fusion · Gravitation · Fragmentation · Distortion",
+  3: "Light · Darkness · multi-element burst",
+  4: "Radiance · Umbra · requires Aeonic aftermath",
+};
+
+// Props that can OPEN a chain toward each stage level
+const STAGE_OPENER_PROPS: Record<number, SCProp[]> = {
+  1: ["Transfixion","Compression","Liquefaction","Scission","Reverberation","Detonation","Induration","Impaction"],
+  2: ["Impaction","Compression","Reverberation","Scission"],
+  3: ["Gravitation","Distortion","Fusion","Fragmentation"],
+  4: ["Light","Darkness"],
+};
+
+// ─── FLAT WS LIST ────────────────────────────────────────────────────────────
+
+interface FlatWS {
+  name: string;
+  weaponType: string;
+  level: number | string;
+  properties: SCProp[];
+}
+
+const ALL_WEAPON_SKILLS: FlatWS[] = WEAPON_TYPES.flatMap(wt =>
+  wt.skills
+    .filter(ws => ws.properties.length > 0)
+    .map(ws => ({ name: ws.name, weaponType: wt.name, level: ws.level, properties: ws.properties }))
+);
+
+function getValidOpeners(stage: number): FlatWS[] {
+  const targets = STAGE_OPENER_PROPS[stage] as SCProp[];
+  return ALL_WEAPON_SKILLS.filter(ws => ws.properties.some(p => targets.includes(p)));
+}
+
+function getValidClosers(openerProps: SCProp[]): FlatWS[] {
+  return ALL_WEAPON_SKILLS.filter(ws => getBestChain(openerProps, ws.properties) !== null);
+}
+
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
 
 export default function SkillchainBuilder() {
-  const [steps, setSteps] = useState<SelectedWS[]>([]);
+  const [stageGoal, setStageGoal] = useState<1 | 2 | 3 | 4 | null>(null);
+  const [steps, setSteps] = useState<FlatWS[]>([]);
   const [pickerVisible, setPickerVisible] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number>(-1);
-  const [pickerWeaponType, setPickerWeaponType] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
-  // Compute chains between consecutive steps
+  // Chains between consecutive steps
   const chains = useMemo(() => {
     const result: (SCResult | null)[] = [];
     if (steps.length < 2) return result;
-
-    let openerProps: SCProp[] = steps[0].ws.properties;
+    let openerProps: SCProp[] = steps[0].properties;
     for (let i = 1; i < steps.length; i++) {
-      const chain = getBestChain(openerProps, steps[i].ws.properties);
+      const chain = getBestChain(openerProps, steps[i].properties);
       result.push(chain);
-      openerProps = chain ? chain.properties : steps[i].ws.properties;
+      openerProps = chain ? chain.properties : steps[i].properties;
     }
     return result;
   }, [steps]);
 
   const lastChain = chains.length > 0 ? chains[chains.length - 1] : null;
 
-  const openPicker = (index: number) => {
-    setEditingIndex(index);
-    setPickerWeaponType(null);
-    setPickerVisible(true);
-  };
+  // Current active props for filtering next step
+  const currentProps = useMemo((): SCProp[] => {
+    if (steps.length === 0) return [];
+    if (chains.length === 0) return steps[0].properties;
+    for (let i = chains.length - 1; i >= 0; i--) {
+      if (chains[i]) return chains[i]!.properties;
+    }
+    return steps[steps.length - 1].properties;
+  }, [steps, chains]);
 
-  const selectWS = (weaponType: string, ws: WS) => {
-    const selected: SelectedWS = { weaponType, ws };
-    setSteps(prev => {
-      if (editingIndex === -1 || editingIndex >= prev.length) {
-        return [...prev, selected];
-      }
-      const next = [...prev];
-      next[editingIndex] = selected;
-      return next;
-    });
+  // Valid WS to show in picker
+  const validWS = useMemo((): FlatWS[] => {
+    if (!stageGoal) return [];
+    return steps.length === 0 ? getValidOpeners(stageGoal) : getValidClosers(currentProps);
+  }, [stageGoal, steps, currentProps]);
+
+  const filteredWS = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return validWS;
+    return validWS.filter(
+      ws => ws.name.toLowerCase().includes(q) || ws.weaponType.toLowerCase().includes(q)
+    );
+  }, [validWS, search]);
+
+  const addStep = (ws: FlatWS) => {
+    setSteps(prev => [...prev, ws]);
     setPickerVisible(false);
-    setPickerWeaponType(null);
+    setSearch("");
   };
 
-  const removeStep = (index: number) => {
-    setSteps(prev => prev.filter((_, i) => i !== index));
+  const removeStep = (i: number) => {
+    setSteps(prev => prev.filter((_, idx) => idx !== i));
   };
 
+  const reset = () => {
+    setStageGoal(null);
+    setSteps([]);
+    setSearch("");
+  };
+
+  // ── Stage selection screen ──────────────────────────────────────────────────
+  if (!stageGoal) {
+    return (
+      <ScrollView style={styles.container}>
+        <Text style={styles.mainTitle}>Skillchain Builder</Text>
+        <Text style={styles.subtitle}>Choose your target skillchain stage</Text>
+        {([1, 2, 3, 4] as const).map(stage => (
+          <TouchableOpacity
+            key={stage}
+            style={[styles.stageBtn, { borderColor: LEVEL_COLORS[stage] }]}
+            onPress={() => setStageGoal(stage)}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={styles.stageBtnTitle}>Stage {stage}</Text>
+              <Text style={styles.stageBtnDesc}>{STAGE_DESCRIPTIONS[stage]}</Text>
+            </View>
+            <Text style={[styles.stageLvBadge, { color: LEVEL_COLORS[stage] }]}>Lv {stage}</Text>
+          </TouchableOpacity>
+        ))}
+
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>How Skillchains Work</Text>
+          {([1,2,3,4] as const).map(lv => (
+            <View key={lv} style={styles.infoRow}>
+              <Text style={[styles.infoLevel, { color: LEVEL_COLORS[lv] }]}>Lv {lv}</Text>
+              <Text style={styles.infoText}>{STAGE_DESCRIPTIONS[lv]}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    );
+  }
+
+  // ── Builder screen ──────────────────────────────────────────────────────────
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.mainTitle}>Skillchain Builder</Text>
-      <Text style={styles.subtitle}>
-        Select up to 6 weapon skills in order. The closer's properties must
-        match the opener's to form a chain.
-      </Text>
-
-      {/* ── Steps ── */}
-      {steps.map((step, i) => (
-        <View key={i}>
-          {/* WS Step Row */}
-          <View style={styles.stepRow}>
-            <View style={styles.stepNum}>
-              <Text style={styles.stepNumText}>{i + 1}</Text>
-            </View>
-            <TouchableOpacity style={styles.stepInfo} onPress={() => openPicker(i)}>
-              <Text style={styles.wsName}>{step.ws.name}</Text>
-              <Text style={styles.wsWeapon}>
-                {step.weaponType} · Lv {step.ws.level}
-              </Text>
-              {step.ws.properties.length > 0 ? (
-                <Text style={styles.wsProps}>{step.ws.properties.join(" / ")}</Text>
-              ) : (
-                <Text style={styles.wsNoProps}>No SC property</Text>
-              )}
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => removeStep(i)} style={styles.removeBtn}>
-              <Text style={styles.removeBtnText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Chain Result between this step and the next */}
-          {i < steps.length - 1 && (
-            <View style={[
-              styles.chainBadge,
-              { backgroundColor: chains[i] ? LEVEL_BG[chains[i]!.level] : "#1A202C" }
-            ]}>
-              {chains[i] ? (
-                <>
-                  <Text style={[styles.chainName, { color: LEVEL_COLORS[chains[i]!.level] }]}>
-                    ↓  {chains[i]!.name}  (Level {chains[i]!.level})
-                  </Text>
-                  <Text style={styles.chainBurst}>
-                    Burst: {chains[i]!.burstElements.join(", ")}
-                  </Text>
-                </>
-              ) : (
-                <Text style={styles.noChain}>↓  No skillchain formed</Text>
-              )}
-            </View>
-          )}
+      {/* Header */}
+      <View style={styles.builderHeader}>
+        <TouchableOpacity onPress={reset} style={styles.backLink}>
+          <Text style={styles.backLinkText}>← Stages</Text>
+        </TouchableOpacity>
+        <View style={[styles.goalBadge, { borderColor: LEVEL_COLORS[stageGoal] }]}>
+          <Text style={[styles.goalBadgeText, { color: LEVEL_COLORS[stageGoal] }]}>
+            Goal: Stage {stageGoal}
+          </Text>
         </View>
-      ))}
+      </View>
 
-      {/* ── Add Step Button ── */}
+      {/* Steps */}
+      {steps.map((ws, i) => {
+        const chain = i < chains.length ? chains[i] : null;
+        return (
+          <View key={i}>
+            <View style={styles.stepRow}>
+              <View style={styles.stepNum}>
+                <Text style={styles.stepNumText}>{i + 1}</Text>
+              </View>
+              <View style={styles.stepInfo}>
+                <Text style={styles.wsName}>{ws.name}</Text>
+                <Text style={styles.wsWeapon}>{ws.weaponType} · {ws.level}</Text>
+                <Text style={styles.wsProps}>{ws.properties.join(" / ")}</Text>
+              </View>
+              <TouchableOpacity onPress={() => removeStep(i)} style={styles.removeBtn}>
+                <Text style={styles.removeBtnText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            {i < steps.length - 1 && (
+              <View style={[
+                styles.chainBadge,
+                { backgroundColor: chain ? LEVEL_BG[chain.level] : "#1A202C" },
+              ]}>
+                {chain ? (
+                  <>
+                    <Text style={[styles.chainName, { color: LEVEL_COLORS[chain.level] }]}>
+                      ↓  {chain.name}  (Level {chain.level})
+                    </Text>
+                    <Text style={styles.chainBurst}>Burst: {chain.burstElements.join(", ")}</Text>
+                  </>
+                ) : (
+                  <Text style={styles.noChain}>↓  No skillchain formed</Text>
+                )}
+              </View>
+            )}
+          </View>
+        );
+      })}
+
+      {/* Add step */}
       {steps.length < 6 && (
-        <TouchableOpacity style={styles.addBtn} onPress={() => openPicker(-1)}>
+        <TouchableOpacity style={styles.addBtn} onPress={() => setPickerVisible(true)}>
           <Text style={styles.addBtnText}>+ Add Step {steps.length + 1}</Text>
         </TouchableOpacity>
       )}
 
-      {/* ── Final Chain Summary ── */}
+      {/* Final result */}
       {lastChain && (
         <View style={[styles.finalCard, { borderColor: LEVEL_COLORS[lastChain.level] }]}>
           <Text style={styles.finalLabel}>Final Skillchain</Text>
           <Text style={[styles.finalName, { color: LEVEL_COLORS[lastChain.level] }]}>
             {lastChain.name} — Level {lastChain.level}
           </Text>
-          <Text style={styles.finalBurst}>
-            Magic Burst: {lastChain.burstElements.join(", ")}
-          </Text>
+          <Text style={styles.finalBurst}>Magic Burst: {lastChain.burstElements.join(", ")}</Text>
         </View>
       )}
 
-      {/* ── Clear ── */}
+      {/* Clear */}
       {steps.length > 0 && (
-        <TouchableOpacity style={styles.clearBtn} onPress={() => setSteps([])}>
-          <Text style={styles.clearBtnText}>Clear All</Text>
+        <TouchableOpacity style={styles.clearBtn} onPress={reset}>
+          <Text style={styles.clearBtnText}>Clear &amp; Change Stage</Text>
         </TouchableOpacity>
       )}
 
-      {/* ── How Combos Work ── */}
-      <View style={styles.infoSection}>
-        <Text style={styles.infoTitle}>How Skillchains Work</Text>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoLevel, { color: LEVEL_COLORS[1] }]}>Lv 1</Text>
-          <Text style={styles.infoText}>Same property on same property. Bursts single element.</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoLevel, { color: LEVEL_COLORS[2] }]}>Lv 2</Text>
-          <Text style={styles.infoText}>
-            4 upgrade paths: Impaction→Liquefaction=Fusion, Compression→Scission=Gravitation,
-            Reverberation→Detonation=Fragmentation, Scission→Transfixion=Distortion.
-          </Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoLevel, { color: LEVEL_COLORS[3] }]}>Lv 3</Text>
-          <Text style={styles.infoText}>
-            Fusion+Fragmentation or Fragmentation+Fusion = Light.{"\n"}
-            Gravitation+Gravitation or Distortion+Gravitation = Darkness.
-          </Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Text style={[styles.infoLevel, { color: LEVEL_COLORS[4] }]}>Lv 4</Text>
-          <Text style={styles.infoText}>
-            Light+Light = Radiance. Darkness+Darkness = Umbra.
-            Requires Aeonic Aftermath. Bursts nearly all elements.
-          </Text>
-        </View>
-      </View>
-
-      {/* ── Nuke Wall / Consecutive Elemental Damage Penalty ── */}
+      {/* Nuke wall info */}
       <View style={styles.infoSection}>
         <Text style={styles.infoTitle}>Consecutive Elemental Damage Penalty (Nuke Wall)</Text>
         <Text style={styles.infoBody}>
-          On Notorious Monsters, casting the same element repeatedly triggers a damage penalty:
+          On Notorious Monsters, same-element spells back-to-back trigger a penalty:
         </Text>
         <View style={styles.penaltyRow}>
           <Text style={styles.penaltyNum}>2nd nuke</Text>
@@ -618,70 +722,65 @@ export default function SkillchainBuilder() {
           <Text style={styles.penaltyVal}>−40–50% damage</Text>
         </View>
         <Text style={styles.infoBody}>
-          The window resets after 5 seconds. The penalty scales linearly up to ~2,500 damage dealt.
-          {"\n\n"}
-          Skillchain elemental damage bypasses this penalty entirely — magic bursts off a skillchain
-          are not penalized. This makes skillchaining especially valuable for BLM/SCH parties on
-          high-HP notorious monsters.
+          Resets after 5 seconds. Magic bursts off a skillchain bypass this penalty entirely.
         </Text>
       </View>
 
-      {/* ── Picker Modal ── */}
+      {/* Picker Modal */}
       <Modal visible={pickerVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
-                {pickerWeaponType ?? "Select Weapon Type"}
+                {steps.length === 0 ? `Stage ${stageGoal} Openers` : "Choose Next Skill"}
               </Text>
-              <TouchableOpacity onPress={() => {
-                setPickerVisible(false);
-                setPickerWeaponType(null);
-              }}>
+              <TouchableOpacity onPress={() => { setPickerVisible(false); setSearch(""); }}>
                 <Text style={styles.modalClose}>✕</Text>
               </TouchableOpacity>
             </View>
 
-            <ScrollView>
-              {!pickerWeaponType ? (
-                // Weapon type list
-                WEAPON_TYPES.map(wt => (
-                  <TouchableOpacity
-                    key={wt.name}
-                    style={styles.pickerItem}
-                    onPress={() => setPickerWeaponType(wt.name)}
-                  >
-                    <Text style={styles.pickerItemText}>{wt.name}</Text>
-                    <Text style={styles.pickerItemArrow}>›</Text>
-                  </TouchableOpacity>
-                ))
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search skill or weapon type..."
+              placeholderTextColor="#6B7280"
+              value={search}
+              onChangeText={setSearch}
+              autoCorrect={false}
+            />
+
+            <ScrollView keyboardShouldPersistTaps="handled">
+              {filteredWS.length === 0 ? (
+                <Text style={styles.emptyMsg}>No matching skills.</Text>
               ) : (
-                // WS list
-                <>
-                  <TouchableOpacity
-                    style={styles.backBtn}
-                    onPress={() => setPickerWeaponType(null)}
-                  >
-                    <Text style={styles.backBtnText}>← Back</Text>
-                  </TouchableOpacity>
-                  {WEAPON_TYPES.find(wt => wt.name === pickerWeaponType)?.skills.map((ws, i) => (
+                filteredWS.map((ws, i) => {
+                  const chainResult = steps.length > 0
+                    ? getBestChain(currentProps, ws.properties)
+                    : null;
+                  return (
                     <TouchableOpacity
                       key={`${ws.name}-${i}`}
                       style={styles.pickerItem}
-                      onPress={() => selectWS(pickerWeaponType, ws)}
+                      onPress={() => addStep(ws)}
                     >
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.pickerItemText}>{ws.name}</Text>
+                        <View style={styles.pickerItemRow}>
+                          <Text style={styles.pickerItemText}>{ws.name}</Text>
+                          {chainResult && (
+                            <Text style={[
+                              styles.chainResultBadge,
+                              { color: LEVEL_COLORS[chainResult.level] },
+                            ]}>
+                              → {chainResult.name}
+                            </Text>
+                          )}
+                        </View>
                         <Text style={styles.pickerItemSub}>
-                          Lv {ws.level}
-                          {ws.properties.length > 0
-                            ? `  ·  ${ws.properties.join(" / ")}`
-                            : "  ·  No SC"}
+                          {ws.weaponType} · {ws.level} · {ws.properties.join(" / ")}
                         </Text>
                       </View>
                     </TouchableOpacity>
-                  ))}
-                </>
+                  );
+                })
               )}
             </ScrollView>
           </View>
@@ -694,23 +793,35 @@ export default function SkillchainBuilder() {
 // ─── STYLES ──────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#1A202C",
+  container: { flex: 1, padding: 20, backgroundColor: "#1A202C" },
+  mainTitle: { fontSize: 28, fontWeight: "800", color: "#FFFFFF", marginBottom: 6 },
+  subtitle: { fontSize: 14, color: "#9CA3AF", fontStyle: "italic", marginBottom: 24 },
+
+  // Stage selection
+  stageBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1F2937",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
   },
-  mainTitle: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#FFFFFF",
-    marginBottom: 6,
+  stageBtnTitle: { color: "#F9FAFB", fontWeight: "700", fontSize: 17 },
+  stageBtnDesc: { color: "#9CA3AF", fontSize: 13, marginTop: 3 },
+  stageLvBadge: { fontWeight: "800", fontSize: 20, marginLeft: 12 },
+
+  // Builder header
+  builderHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
   },
-  subtitle: {
-    fontSize: 14,
-    color: "#9CA3AF",
-    fontStyle: "italic",
-    marginBottom: 20,
-  },
+  backLink: { paddingVertical: 6, paddingRight: 12 },
+  backLinkText: { color: "#60A5FA", fontWeight: "600", fontSize: 14 },
+  goalBadge: { borderWidth: 1, borderRadius: 6, paddingHorizontal: 10, paddingVertical: 4 },
+  goalBadgeText: { fontWeight: "700", fontSize: 13 },
 
   // Steps
   stepRow: {
@@ -728,71 +839,21 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     backgroundColor: "#4A5568",
   },
-  stepNumText: {
-    color: "#E5E7EB",
-    fontWeight: "700",
-    fontSize: 16,
-  },
-  stepInfo: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  wsName: {
-    color: "#F9FAFB",
-    fontWeight: "600",
-    fontSize: 15,
-  },
-  wsWeapon: {
-    color: "#9CA3AF",
-    fontSize: 12,
-    marginTop: 1,
-  },
-  wsProps: {
-    color: "#60A5FA",
-    fontSize: 12,
-    marginTop: 2,
-  },
-  wsNoProps: {
-    color: "#4B5563",
-    fontSize: 12,
-    marginTop: 2,
-    fontStyle: "italic",
-  },
-  removeBtn: {
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-  },
-  removeBtnText: {
-    color: "#FC8181",
-    fontSize: 16,
-    fontWeight: "700",
-  },
+  stepNumText: { color: "#E5E7EB", fontWeight: "700", fontSize: 16 },
+  stepInfo: { flex: 1, paddingVertical: 10, paddingHorizontal: 12 },
+  wsName: { color: "#F9FAFB", fontWeight: "600", fontSize: 15 },
+  wsWeapon: { color: "#9CA3AF", fontSize: 12, marginTop: 1 },
+  wsProps: { color: "#60A5FA", fontSize: 12, marginTop: 2 },
+  removeBtn: { paddingHorizontal: 14, paddingVertical: 14 },
+  removeBtnText: { color: "#FC8181", fontSize: 16, fontWeight: "700" },
 
-  // Chain badge between steps
-  chainBadge: {
-    marginLeft: 36,
-    marginBottom: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  chainName: {
-    fontWeight: "700",
-    fontSize: 14,
-  },
-  chainBurst: {
-    color: "#9CA3AF",
-    fontSize: 12,
-    marginTop: 1,
-  },
-  noChain: {
-    color: "#4B5563",
-    fontSize: 13,
-    fontStyle: "italic",
-  },
+  // Chain badge
+  chainBadge: { marginLeft: 36, marginBottom: 4, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6 },
+  chainName: { fontWeight: "700", fontSize: 14 },
+  chainBurst: { color: "#9CA3AF", fontSize: 12, marginTop: 1 },
+  noChain: { color: "#4B5563", fontSize: 13, fontStyle: "italic" },
 
-  // Add/Clear buttons
+  // Buttons
   addBtn: {
     borderWidth: 1,
     borderColor: "#4A5568",
@@ -803,22 +864,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 16,
   },
-  addBtnText: {
-    color: "#60A5FA",
-    fontWeight: "600",
-    fontSize: 15,
-  },
-  clearBtn: {
-    padding: 12,
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  clearBtnText: {
-    color: "#FC8181",
-    fontSize: 14,
-  },
+  addBtnText: { color: "#60A5FA", fontWeight: "600", fontSize: 15 },
+  clearBtn: { padding: 12, alignItems: "center", marginBottom: 4 },
+  clearBtnText: { color: "#FC8181", fontSize: 14 },
 
-  // Final chain card
+  // Final card
   finalCard: {
     borderWidth: 2,
     borderRadius: 10,
@@ -834,53 +884,16 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 4,
   },
-  finalName: {
-    fontSize: 22,
-    fontWeight: "800",
-    marginBottom: 4,
-  },
-  finalBurst: {
-    color: "#D1D5DB",
-    fontSize: 14,
-  },
+  finalName: { fontSize: 22, fontWeight: "800", marginBottom: 4 },
+  finalBurst: { color: "#D1D5DB", fontSize: 14 },
 
-  // Info sections
-  infoSection: {
-    backgroundColor: "#1F2937",
-    borderRadius: 8,
-    padding: 14,
-    marginTop: 20,
-    marginBottom: 4,
-  },
-  infoTitle: {
-    color: "#E5E7EB",
-    fontWeight: "700",
-    fontSize: 15,
-    marginBottom: 10,
-  },
-  infoRow: {
-    flexDirection: "row",
-    marginBottom: 8,
-    alignItems: "flex-start",
-  },
-  infoLevel: {
-    fontWeight: "700",
-    fontSize: 13,
-    width: 44,
-    marginTop: 1,
-  },
-  infoText: {
-    flex: 1,
-    color: "#9CA3AF",
-    fontSize: 13,
-    lineHeight: 19,
-  },
-  infoBody: {
-    color: "#9CA3AF",
-    fontSize: 13,
-    lineHeight: 20,
-    marginBottom: 8,
-  },
+  // Info
+  infoSection: { backgroundColor: "#1F2937", borderRadius: 8, padding: 14, marginTop: 20, marginBottom: 4 },
+  infoTitle: { color: "#E5E7EB", fontWeight: "700", fontSize: 15, marginBottom: 10 },
+  infoRow: { flexDirection: "row", marginBottom: 8, alignItems: "flex-start" },
+  infoLevel: { fontWeight: "700", fontSize: 13, width: 44, marginTop: 1 },
+  infoText: { flex: 1, color: "#9CA3AF", fontSize: 13, lineHeight: 19 },
+  infoBody: { color: "#9CA3AF", fontSize: 13, lineHeight: 20, marginBottom: 8 },
   penaltyRow: {
     flexDirection: "row",
     backgroundColor: "#2D3748",
@@ -890,30 +903,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     justifyContent: "space-between",
   },
-  penaltyNum: {
-    color: "#E5E7EB",
-    fontWeight: "600",
-    fontSize: 13,
-  },
-  penaltyVal: {
-    color: "#FC8181",
-    fontWeight: "700",
-    fontSize: 13,
-  },
+  penaltyNum: { color: "#E5E7EB", fontWeight: "600", fontSize: 13 },
+  penaltyVal: { color: "#FC8181", fontWeight: "700", fontSize: 13 },
 
   // Modal
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: "#1F2937",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    maxHeight: "75%",
-    paddingBottom: 24,
-  },
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "flex-end" },
+  modalContent: { backgroundColor: "#1F2937", borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: "80%", paddingBottom: 24 },
   modalHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -922,47 +917,28 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#374151",
   },
-  modalTitle: {
+  modalTitle: { color: "#F9FAFB", fontWeight: "700", fontSize: 17 },
+  modalClose: { color: "#9CA3AF", fontSize: 20, paddingLeft: 12 },
+  searchInput: {
+    backgroundColor: "#111827",
     color: "#F9FAFB",
-    fontWeight: "700",
-    fontSize: 17,
-  },
-  modalClose: {
-    color: "#9CA3AF",
-    fontSize: 20,
-    paddingLeft: 12,
-  },
-  pickerItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 13,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 14,
     borderBottomWidth: 1,
     borderBottomColor: "#374151",
   },
-  pickerItemText: {
-    color: "#E5E7EB",
-    fontSize: 15,
-  },
-  pickerItemSub: {
-    color: "#6B7280",
-    fontSize: 12,
-    marginTop: 2,
-  },
-  pickerItemArrow: {
-    color: "#6B7280",
-    fontSize: 20,
-  },
-  backBtn: {
+  emptyMsg: { color: "#6B7280", textAlign: "center", marginTop: 24, fontSize: 14 },
+  pickerItem: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#374151",
   },
-  backBtnText: {
-    color: "#60A5FA",
-    fontSize: 14,
-    fontWeight: "600",
-  },
+  pickerItemRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  pickerItemText: { color: "#E5E7EB", fontSize: 15, fontWeight: "500" },
+  chainResultBadge: { fontSize: 12, fontWeight: "700" },
+  pickerItemSub: { color: "#6B7280", fontSize: 12, marginTop: 2 },
 });
