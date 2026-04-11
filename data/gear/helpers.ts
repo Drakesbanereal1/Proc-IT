@@ -16,6 +16,7 @@ import { ACCESSORIES } from './accessories';
 import { REFORGED } from './reforged';
 import { INSTRUMENTS } from './instruments';
 import { ODYSSEY } from './odyssey';
+import { PRIME_WEAPONS } from './prime';
 import { JOB_WEIGHT_OVERRIDES } from './compareProfiles';
 
 // ─── Master dataset ───────────────────────────────────────────────────────────
@@ -28,6 +29,7 @@ export const ALL_GEAR: GearItem[] = [
   ...REFORGED,
   ...INSTRUMENTS,
   ...ODYSSEY,
+  ...PRIME_WEAPONS,
 ];
 
 // ─── Filtering ────────────────────────────────────────────────────────────────

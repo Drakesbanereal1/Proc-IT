@@ -42,4 +42,14 @@ export const SHIELDS: GearItem[] = [
     stats: { vit: 20, defense: 45, enmity: 10, pdt: 5 },
     tags: ["escha", "shield"],
   },
+  {
+    id: "duban",
+    name: "Duban",
+    category: "shield", slot: "sub", weaponType: "Shield",
+    jobs: ["PLD"], level: 99, itemLevel: 119,
+    source: "Odyssey", gearTier: "Prime", endgame: true, augmentable: true, jobExclusive: true,
+    stats: { hp: 150, vit: 30, defense: 80, enmity: 20, dt: 8, pdt: 8, spellInterruptDown: 30 },
+    tags: ["prime", "shield", "pld"],
+    bgwikiUrl: "https://www.bg-wiki.com/ffxi/Duban",
+  },
 ];

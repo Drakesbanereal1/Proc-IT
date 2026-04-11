@@ -88,6 +88,26 @@ export const INSTRUMENTS: GearItem[] = [
     },
     tags: ["ambuscade", "instrument", "brd"],
   },
+  // ── Prime ─────────────────────────────────────────────────────────────────────
+  {
+    id: "loughnashade",
+    name: "Loughnashade",
+    category: "weapon", slot: "range", weaponType: "Instrument",
+    jobs: ["BRD"], level: 99, itemLevel: 119,
+    source: "Odyssey", gearTier: "Prime", endgame: true, augmentable: true,
+    isInstrument: true, jobExclusive: true,
+    weapon: { damage: 0, delay: 0 },
+    stats: {
+      chr: 25,
+      singingSkill: 20,
+      instrumentSkill: 15,
+      songDuration: 3,
+      notes: "Allows BRD to have 3 active songs; augmentable via Odyssey",
+    },
+    tags: ["prime", "instrument", "brd"],
+    bgwikiUrl: "https://www.bg-wiki.com/ffxi/Loughnashade",
+  },
+
   {
     id: "chanter-staff",
     name: "Chanter's Staff",
