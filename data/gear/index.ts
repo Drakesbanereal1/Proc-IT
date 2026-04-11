@@ -6,6 +6,8 @@ export type {
   WeaponType,
   JobCode,
   UpgradeTier,
+  GearTier,
+  SuperiorLevel,
   GearCategory,
   ItemSource,
   WeaponStats,
@@ -19,6 +21,10 @@ export { WEAPONS } from './weapons';
 export { SHIELDS } from './shields';
 export { ARMOR } from './armor';
 export { ACCESSORIES } from './accessories';
+export { REFORGED } from './reforged';
+export { JOB_PROFILES } from './jobs';
+export type { JobProfile } from './jobs';
+export { JOB_WEIGHT_OVERRIDES } from './compareProfiles';
 
 export {
   ALL_GEAR,

@@ -169,7 +169,7 @@ export default function GearChecker() {
 
   const handleExplain = useCallback(() => {
     if (!itemA || !itemB) return;
-    setExplanation(generateExplanation(itemA, itemB, mode, diffs));
+    setExplanation(generateExplanation(itemA, itemB, mode, diffs, job ?? undefined));
   }, [itemA, itemB, mode, diffs]);
 
   const reset = () => {
@@ -206,7 +206,7 @@ export default function GearChecker() {
             {' '}— tap to pick A then B
           </Text>
           {candidates
-            .sort((a, b) => scoreItem(b, mode) - scoreItem(a, mode))
+            .sort((a, b) => scoreItem(b, mode, job ?? undefined) - scoreItem(a, mode, job ?? undefined))
             .map(item => {
               const isA = itemA?.id === item.id;
               const isB = itemB?.id === item.id;
@@ -260,7 +260,7 @@ export default function GearChecker() {
 
           {explanation && (
             <View style={styles.explanationBox}>
-              <Text style={styles.explanationLabel}>Claude's Analysis</Text>
+              <Text style={styles.explanationLabel}>Analysis {job ? `— ${job} ${mode}` : `— ${mode}`}</Text>
               <Text style={styles.explanationText}>{explanation}</Text>
             </View>
           )}

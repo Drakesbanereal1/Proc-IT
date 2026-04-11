@@ -44,6 +44,22 @@ export type JobCode =
 
 export type UpgradeTier = "NQ" | "+1" | "+2" | "+3" | "+4";
 
+/** Broad gear lineage — used for tier comparison filtering */
+export type GearTier =
+  | "Artifact"      // Reforged AF armor sets
+  | "Relic"         // Reforged Relic armor sets / Relic weapons
+  | "Empyrean"      // Reforged Empyrean armor sets / Empyrean weapons
+  | "Aeonic"        // Aeonic weapons
+  | "Prime"         // Prime weapons (Odyssey)
+  | "Ultimate"      // Ultimate weapons
+  | "Superior"      // SU equipment (Su3 / Su4 / Su5)
+  | "Ambuscade"     // Monthly Ambuscade rewards
+  | "Endgame"       // Other endgame (Sortie, Domain Invasion, etc.)
+  | "Standard";     // Craftable / NPC / misc
+
+/** SU tier for Superior Equipment */
+export type SuperiorLevel = "SU1" | "SU2" | "SU3" | "SU4" | "SU5";
+
 export type GearCategory = "weapon" | "shield" | "armor" | "accessory";
 
 export type ItemSource =
@@ -52,6 +68,8 @@ export type ItemSource =
   | "Empyrean"
   | "Aeonic"
   | "Prime"
+  | "Ultimate"
+  | "Superior"
   | "Ambuscade"
   | "Escha"
   | "Sortie"
@@ -221,12 +239,19 @@ export interface GearItem {
   level: number;
   /** Item level (modern, 119 era+) */
   itemLevel?: number;
+  /** Upgrade tier: NQ / +1 / +2 / +3 / +4 */
   upgradeTier?: UpgradeTier;
+  /** Broad gear lineage for tier-based filtering */
+  gearTier?: GearTier;
+  /** Superior Equipment tier (SU3 / SU4 / SU5) */
+  superiorLevel?: SuperiorLevel;
   /** Base weapon stats (weapons only) */
   weapon?: WeaponStats;
   stats: GearStats;
   description?: string;
   source?: ItemSource;
+  /** BG Wiki URL for this item — used for reference / future import */
+  bgwikiUrl?: string;
   /** Additional searchable tags */
   tags?: string[];
   /** Whether this is a recommended comparison/endgame piece */

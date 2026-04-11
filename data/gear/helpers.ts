@@ -13,6 +13,8 @@ import { WEAPONS } from './weapons';
 import { SHIELDS } from './shields';
 import { ARMOR } from './armor';
 import { ACCESSORIES } from './accessories';
+import { REFORGED } from './reforged';
+import { JOB_WEIGHT_OVERRIDES } from './compareProfiles';
 
 // ─── Master dataset ───────────────────────────────────────────────────────────
 
@@ -21,6 +23,7 @@ export const ALL_GEAR: GearItem[] = [
   ...SHIELDS,
   ...ARMOR,
   ...ACCESSORIES,
+  ...REFORGED,
 ];
 
 // ─── Filtering ────────────────────────────────────────────────────────────────
@@ -178,15 +181,23 @@ const MODE_WEIGHTS: Record<CompareMode, Partial<Record<keyof GearStats, number>>
  * Score a single item for a given compare mode.
  *
  * Mode weights express priority — higher weight = more important for that playstyle.
- * Any stat actually present on the item but NOT explicitly weighted still contributes
- * at a base weight of 1, so no real stat value is ever silently ignored.
+ * When a job is provided, job-specific overrides from JOB_WEIGHT_OVERRIDES are merged
+ * on top of the base weights (override wins on conflict).
+ * Any stat present on the item but NOT explicitly weighted still contributes at weight 1,
+ * so no real stat value is ever silently ignored.
  */
-export function scoreItem(item: GearItem, mode: CompareMode): number {
-  const weights = MODE_WEIGHTS[mode] as Record<string, number>;
+export function scoreItem(item: GearItem, mode: CompareMode, job?: JobCode): number {
+  const base = MODE_WEIGHTS[mode] as Record<string, number>;
+  const jobOverrides = job
+    ? ((JOB_WEIGHT_OVERRIDES[job]?.[mode] ?? {}) as Record<string, number>)
+    : {};
+  // Merge: job overrides take precedence over base weights
+  const weights: Record<string, number> = { ...base, ...jobOverrides };
+
   return NUMERIC_STATS.reduce((total, stat) => {
     const value = (item.stats[stat as keyof GearStats] as number | undefined) ?? 0;
     if (value === 0) return total;
-    // Use explicit weight if defined, otherwise fall back to 1 so the stat still counts
+    // Explicit weight if defined, otherwise base weight 1 so no stat is silently ignored
     const weight = weights[stat] ?? 1;
     return total + weight * value;
   }, 0);
@@ -194,6 +205,7 @@ export function scoreItem(item: GearItem, mode: CompareMode): number {
 
 /**
  * Get top N items for a job+slot combination, sorted by score for a mode.
+ * Passes the job through to scoreItem so job-specific weights apply.
  */
 export function getBestGear(
   job: JobCode,
@@ -202,7 +214,7 @@ export function getBestGear(
   topN = 5
 ): GearItem[] {
   return filterByJobAndSlot(job, slot)
-    .map(item => ({ item, score: scoreItem(item, mode) }))
+    .map(item => ({ item, score: scoreItem(item, mode, job) }))
     .sort((a, b) => b.score - a.score)
     .slice(0, topN)
     .map(({ item }) => item);
@@ -257,17 +269,22 @@ function fmt(val: number): string {
  * Generate a plain-English explanation of which item wins for a mode and why
  * the losing item may still be worth keeping for other modes.
  *
- * No LLM — derived entirely from MODE_WEIGHTS and scoreItem().
+ * No LLM — derived entirely from MODE_WEIGHTS + job overrides and scoreItem().
  */
 export function generateExplanation(
   a: GearItem,
   b: GearItem,
   mode: CompareMode,
-  diffs: StatDiff[]
+  diffs: StatDiff[],
+  job?: JobCode
 ): string {
-  const scoreA = scoreItem(a, mode);
-  const scoreB = scoreItem(b, mode);
-  const weights = MODE_WEIGHTS[mode] as Record<string, number>;
+  const scoreA = scoreItem(a, mode, job);
+  const scoreB = scoreItem(b, mode, job);
+  const base = MODE_WEIGHTS[mode] as Record<string, number>;
+  const jobOverrides = job
+    ? ((JOB_WEIGHT_OVERRIDES[job]?.[mode] ?? {}) as Record<string, number>)
+    : {};
+  const weights: Record<string, number> = { ...base, ...jobOverrides };
 
   // Determine winner/loser for selected mode
   const tied = Math.abs(scoreA - scoreB) < 0.5;
