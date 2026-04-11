@@ -16,9 +16,9 @@ const AppDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: 'transparent',
+    background: '#000000',
     primary: PROC_COLORS.yellow,
-    card: 'rgba(17, 24, 39, 0.82)',
+    card: 'rgba(17, 24, 39, 0.88)',
     text: '#FFFFFF',
   },
 };
@@ -67,6 +67,6 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: '#000000',
   },
 });
