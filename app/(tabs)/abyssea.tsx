@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, StyleSheet, Image } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { PROC_COLORS } from "../../constants/procs";
 
 // --- IMAGE MAPPING ---
@@ -95,8 +96,11 @@ const yellowProcs: SpellGroup[] = [
 ];
 
 // --- HELPER COMPONENTS ---
-const ProcHeader = ({ title, color }) => (
-  <Text style={[styles.procHeader, { color }]}>{title}</Text>
+const ProcHeader = ({ title, color, open, onToggle }: { title: string; color: string; open: boolean; onToggle: () => void }) => (
+  <TouchableOpacity style={styles.procHeaderRow} onPress={onToggle} activeOpacity={0.7}>
+    <Text style={[styles.procHeader, { color }]}>{title}</Text>
+    <Text style={[styles.chevron, { color }]}>{open ? '▼' : '▶'}</Text>
+  </TouchableOpacity>
 );
 
 const SectionDescription = ({ text }) => (
@@ -116,59 +120,75 @@ const SkillDisplay = ({ skill }) => (
 
 // --- MAIN COMPONENT ---
 export default function Abyssea() {
+  const [redOpen,    setRedOpen]    = useState(false);
+  const [blueOpen,   setBlueOpen]   = useState(false);
+  const [yellowOpen, setYellowOpen] = useState(false);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.mainTitle}>Abyssea Procs</Text>
 
       {/* RED PROCS */}
       <View style={styles.section}>
-        <ProcHeader title="Red !!" color={PROC_COLORS.red} />
-        <SectionDescription text="A pair of red exclamation points means that an elemental weapon skill has staggered the monster. The elemental weapon skill that triggers the Red !! is random." />
-        {redProcs.map((group, index) => (
-          <View key={index} style={styles.row}>
-            <Text style={styles.headerCell}>{group.weapon}</Text>
-            <View style={styles.valueCell}>
-              {group.skills.map((skill, i) => (
-                <SkillDisplay key={i} skill={skill} />
-              ))}
-            </View>
-          </View>
-        ))}
-      </View>
-
-      {/* BLUE PROCS */}
-      <View style={styles.section}>
-        <ProcHeader title="Blue !!" color={PROC_COLORS.blue} />
-        <SectionDescription text="A pair of blue exclamation points means that a physical weapon skill has staggered the monster. The time of day a monster was claimed will determine which type of weapon skill can stagger the monster." />
-        {blueProcs.map((timedGroup, index) => (
-          <View key={index} style={styles.subSection}>
-            <Text style={styles.subHeader}>{timedGroup.damageType} ({timedGroup.time})</Text>
-            {timedGroup.groups.map((group, i) => (
-              <View key={i} style={styles.row}>
+        <ProcHeader title="Red !!" color={PROC_COLORS.red} open={redOpen} onToggle={() => setRedOpen(o => !o)} />
+        {redOpen && (
+          <>
+            <SectionDescription text="A pair of red exclamation points means that an elemental weapon skill has staggered the monster. The elemental weapon skill that triggers the Red !! is random." />
+            {redProcs.map((group, index) => (
+              <View key={index} style={styles.row}>
                 <Text style={styles.headerCell}>{group.weapon}</Text>
                 <View style={styles.valueCell}>
-                  {group.skills.map((skill, j) => (
-                     <SkillDisplay key={j} skill={skill} />
+                  {group.skills.map((skill, i) => (
+                    <SkillDisplay key={i} skill={skill} />
                   ))}
                 </View>
               </View>
             ))}
-          </View>
-        ))}
+          </>
+        )}
+      </View>
+
+      {/* BLUE PROCS */}
+      <View style={styles.section}>
+        <ProcHeader title="Blue !!" color={PROC_COLORS.blue} open={blueOpen} onToggle={() => setBlueOpen(o => !o)} />
+        {blueOpen && (
+          <>
+            <SectionDescription text="A pair of blue exclamation points means that a physical weapon skill has staggered the monster. The time of day a monster was claimed will determine which type of weapon skill can stagger the monster." />
+            {blueProcs.map((timedGroup, index) => (
+              <View key={index} style={styles.subSection}>
+                <Text style={styles.subHeader}>{timedGroup.damageType} ({timedGroup.time})</Text>
+                {timedGroup.groups.map((group, i) => (
+                  <View key={i} style={styles.row}>
+                    <Text style={styles.headerCell}>{group.weapon}</Text>
+                    <View style={styles.valueCell}>
+                      {group.skills.map((skill, j) => (
+                        <SkillDisplay key={j} skill={skill} />
+                      ))}
+                    </View>
+                  </View>
+                ))}
+              </View>
+            ))}
+          </>
+        )}
       </View>
 
       {/* YELLOW PROCS */}
       <View style={styles.section}>
-        <ProcHeader title="Yellow !!" color={PROC_COLORS.yellow} />
-        <SectionDescription text="A pair of yellow exclamation points means that a spell has staggered the monster. The element of the day determines which spell can cause this effect." />
-        {yellowProcs.map((group, index) => (
-          <View key={index} style={styles.row}>
-            <Text style={styles.headerCell}>{group.day}</Text>
-            <View style={styles.valueCell}>
-              <Text style={styles.text}>{group.spells.join(", ")}</Text>
-            </View>
-          </View>
-        ))}
+        <ProcHeader title="Yellow !!" color={PROC_COLORS.yellow} open={yellowOpen} onToggle={() => setYellowOpen(o => !o)} />
+        {yellowOpen && (
+          <>
+            <SectionDescription text="A pair of yellow exclamation points means that a spell has staggered the monster. The element of the day determines which spell can cause this effect." />
+            {yellowProcs.map((group, index) => (
+              <View key={index} style={styles.row}>
+                <Text style={styles.headerCell}>{group.day}</Text>
+                <View style={styles.valueCell}>
+                  <Text style={styles.text}>{group.spells.join(", ")}</Text>
+                </View>
+              </View>
+            ))}
+          </>
+        )}
       </View>
     </ScrollView>
   );
@@ -193,10 +213,20 @@ const styles = StyleSheet.create({
   subSection: {
     marginTop: 15,
   },
+  procHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 8,
+    marginBottom: 2,
+  },
   procHeader: {
     fontSize: 24,
     fontWeight: "700",
-    marginBottom: 5,
+  },
+  chevron: {
+    fontSize: 16,
+    fontWeight: "700",
   },
   subHeader: {
     fontSize: 18,
