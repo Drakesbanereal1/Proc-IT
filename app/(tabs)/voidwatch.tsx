@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { PROC_COLORS } from "../../constants/procs";
 
 // --- DATA STRUCTURES ---
@@ -114,6 +115,16 @@ const voidwatchWeaknesses: TriggerCategory[] = [
 
 // --- MAIN COMPONENT ---
 export default function Voidwatch() {
+  const [openSections, setOpenSections] = useState<Set<number>>(new Set());
+
+  const toggle = (index: number) => {
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      next.has(index) ? next.delete(index) : next.add(index);
+      return next;
+    });
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <Text style={styles.mainTitle}>Voidwatch Weaknesses</Text>
@@ -121,19 +132,27 @@ export default function Voidwatch() {
         Voidwatch Notorious Monsters have their weaknesses revealed in a specific order, starting with Yellow, then Blue, then Red. Use the triggers below to proc the appropriate weakness.
       </Text>
 
-      {voidwatchWeaknesses.map((category, index) => (
-        <View key={index} style={styles.section}>
-          <Text style={[styles.procHeader, { color: category.color }]}>{category.title}</Text>
-          <View style={styles.table}>
-            {category.data.map((item, i) => (
-              <View key={i} style={styles.tableRow}>
-                <Text style={styles.headerCell}>{item.name}</Text>
-                <Text style={styles.tableCell}>{item.triggers}</Text>
+      {voidwatchWeaknesses.map((category, index) => {
+        const isOpen = openSections.has(index);
+        return (
+          <View key={index} style={styles.section}>
+            <TouchableOpacity style={styles.headerRow} onPress={() => toggle(index)} activeOpacity={0.7}>
+              <Text style={[styles.procHeader, { color: category.color }]}>{category.title}</Text>
+              <Text style={styles.toggleHint}>{isOpen ? 'tap to close' : 'tap to open'}</Text>
+            </TouchableOpacity>
+            {isOpen && (
+              <View style={styles.table}>
+                {category.data.map((item, i) => (
+                  <View key={i} style={styles.tableRow}>
+                    <Text style={styles.headerCell}>{item.name}</Text>
+                    <Text style={styles.tableCell}>{item.triggers}</Text>
+                  </View>
+                ))}
               </View>
-            ))}
+            )}
           </View>
-        </View>
-      ))}
+        );
+      })}
     </ScrollView>
   );
 }
@@ -165,10 +184,21 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 20,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    marginBottom: 2,
+  },
   procHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 15,
+  },
+  toggleHint: {
+    fontSize: 12,
+    color: "#6B7280",
+    fontStyle: "italic",
   },
   table: {
     backgroundColor: "#2D3748",
