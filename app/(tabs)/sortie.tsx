@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 // --- DATA STRUCTURES ---
 interface SortieObjective {
@@ -105,6 +106,36 @@ const sortieSectors: SortieSector[] = [
   }
 ];
 
+// --- SECTOR CARD (collapsible) ---
+function SectorCard({ sector }: { sector: SortieSector }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.sectorCard}>
+      <TouchableOpacity style={styles.sectorHeaderRow} onPress={() => setOpen(o => !o)} activeOpacity={0.7}>
+        <Text style={styles.sectorHeader}>{sector.title}</Text>
+        <Text style={styles.toggleHint}>{open ? 'tap to close' : 'tap to open'}</Text>
+      </TouchableOpacity>
+
+      {open && (
+        <View style={styles.table}>
+          <View style={styles.tableHeaderRow}>
+            <Text style={[styles.tableHeader, {flex: 1.5}]}>Chest</Text>
+            <Text style={[styles.tableHeader, {flex: 4}]}>Objective</Text>
+            <Text style={[styles.tableHeader, {flex: 2.5}]}>Reward</Text>
+          </View>
+          {sector.objectives.map((obj, i) => (
+            <View key={i} style={styles.tableRow}>
+              <Text style={[styles.tableCell, {flex: 1.5, color: '#f0ad4e'}]}>{obj.chest}</Text>
+              <Text style={[styles.tableCell, {flex: 4}]}>{obj.objective}</Text>
+              <Text style={[styles.tableCell, {flex: 2.5}]}>{obj.reward}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
 // --- MAIN COMPONENT ---
 export default function Sortie() {
   return (
@@ -115,23 +146,7 @@ export default function Sortie() {
       </Text>
 
       {sortieSectors.map((sector) => (
-        <View key={sector.id} style={styles.sectorCard}>
-          <Text style={styles.sectorHeader}>{sector.title}</Text>
-          <View style={styles.table}>
-              <View style={styles.tableHeaderRow}>
-                <Text style={[styles.tableHeader, {flex: 1.5}]}>Chest</Text>
-                <Text style={[styles.tableHeader, {flex: 4}]}>Objective</Text>
-                <Text style={[styles.tableHeader, {flex: 2.5}]}>Reward</Text>
-              </View>
-            {sector.objectives.map((obj, i) => (
-              <View key={i} style={styles.tableRow}>
-                <Text style={[styles.tableCell, {flex: 1.5, color: '#f0ad4e'}]}>{obj.chest}</Text>
-                <Text style={[styles.tableCell, {flex: 4}]}>{obj.objective}</Text>
-                <Text style={[styles.tableCell, {flex: 2.5}]}>{obj.reward}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
+        <SectorCard key={sector.id} sector={sector} />
       ))}
     </ScrollView>
   );
@@ -165,12 +180,23 @@ const styles = StyleSheet.create({
   sectorCard: {
     marginBottom: 20,
   },
+  sectorHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 5,
+    paddingVertical: 6,
+    marginBottom: 4,
+  },
   sectorHeader: {
     fontSize: 22,
     fontWeight: "bold",
     color: "#E5E7EB",
-    marginBottom: 10,
-    paddingLeft: 5, 
+  },
+  toggleHint: {
+    fontSize: 12,
+    color: "#6B7280",
+    fontStyle: "italic",
   },
   table: {
     backgroundColor: "#2D3748",

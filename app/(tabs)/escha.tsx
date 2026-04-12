@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 
@@ -282,28 +283,34 @@ function NMCard({ nm }: { nm: NM }) {
 }
 
 function TierSection({ tier }: { tier: Tier }) {
+  const [open, setOpen] = useState(false);
   const color = TIER_COLORS[tier.label] ?? "#E5E7EB";
   return (
     <View style={styles.tierSection}>
-      <View style={styles.tierHeader}>
+      <TouchableOpacity style={styles.tierHeader} onPress={() => setOpen(o => !o)} activeOpacity={0.7}>
         <Text style={[styles.tierLabel, { color }]}>{tier.label}</Text>
         <Text style={styles.tierLevel}>{tier.level}</Text>
-      </View>
+        <Text style={styles.toggleHint}>{open ? 'tap to close' : 'tap to open'}</Text>
+      </TouchableOpacity>
 
-      {tier.sharedItems && (
-        <View style={styles.sharedBox}>
-          <Text style={styles.sharedTitle}>Trade any one of these to the NPC:</Text>
-          <Text style={styles.sharedItems}>{tier.sharedItems}</Text>
-        </View>
+      {open && (
+        <>
+          {tier.sharedItems && (
+            <View style={styles.sharedBox}>
+              <Text style={styles.sharedTitle}>Trade any one of these to the NPC:</Text>
+              <Text style={styles.sharedItems}>{tier.sharedItems}</Text>
+            </View>
+          )}
+
+          {tier.note && (
+            <Text style={styles.tierNote}>{tier.note}</Text>
+          )}
+
+          {tier.nms.map((nm, i) => (
+            <NMCard key={i} nm={nm} />
+          ))}
+        </>
       )}
-
-      {tier.note && (
-        <Text style={styles.tierNote}>{tier.note}</Text>
-      )}
-
-      {tier.nms.map((nm, i) => (
-        <NMCard key={i} nm={nm} />
-      ))}
     </View>
   );
 }
@@ -344,6 +351,7 @@ const styles = StyleSheet.create({
   tierHeader:  { flexDirection: "row", alignItems: "center", marginBottom: 6, gap: 10 },
   tierLabel:   { fontSize: 15, fontWeight: "700" },
   tierLevel:   { fontSize: 12, color: "#6B7280" },
+  toggleHint:  { fontSize: 12, color: "#6B7280", fontStyle: "italic", marginLeft: "auto" },
 
   sharedBox:    { backgroundColor: "#1F2937", borderRadius: 6, padding: 10, marginBottom: 8 },
   sharedTitle:  { color: "#9CA3AF", fontSize: 11, fontWeight: "600", marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 },
