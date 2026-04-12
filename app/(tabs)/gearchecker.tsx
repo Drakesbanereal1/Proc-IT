@@ -1,7 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
+  TextInput, ActivityIndicator, Platform,
 } from 'react-native';
+import { useBGWikiLookup } from '@/hooks/useBGWikiLookup';
 import {
   filterByJobAndSlot, compareItems, scoreItem, generateExplanation,
   type GearItem, type GearSlot, type JobCode, type CompareMode, type StatDiff,
@@ -159,6 +161,11 @@ export default function GearChecker() {
   const [itemB, setItemB] = useState<GearItem | null>(null);
   const [explanation, setExplanation] = useState<string | null>(null);
 
+  // BGWiki lookup
+  const [wikiPanelOpen, setWikiPanelOpen] = useState(false);
+  const [wikiQuery,     setWikiQuery]     = useState('');
+  const { item: wikiItem, loading: wikiLoading, error: wikiError, search: wikiSearch, clear: wikiClear } = useBGWikiLookup();
+
   // Instruments are in slot "range" but should not be scored as Ranged
   const effectiveMode: CompareMode = (slot === 'range' && job === 'BRD') ? 'Support' : mode;
 
@@ -200,6 +207,112 @@ export default function GearChecker() {
       {/* Mode */}
       <Text style={styles.sectionLabel}>Compare Mode</Text>
       <ChipRow options={MODES} selected={mode} onSelect={setMode} />
+
+      {/* BGWiki Lookup — web only (Netlify Functions don't run natively) */}
+      {Platform.OS === 'web' && (
+        <View style={styles.wikiPanel}>
+          <TouchableOpacity
+            style={styles.wikiToggle}
+            onPress={() => { setWikiPanelOpen(o => !o); wikiClear(); setWikiQuery(''); }}
+          >
+            <Text style={styles.wikiToggleText}>
+              Search BGWiki {wikiPanelOpen ? '▲' : '▼'}
+            </Text>
+          </TouchableOpacity>
+
+          {wikiPanelOpen && (
+            <View style={styles.wikiBody}>
+              <View style={styles.wikiInputRow}>
+                <TextInput
+                  style={styles.wikiInput}
+                  placeholder="Weapon or armor name…"
+                  placeholderTextColor={C.muted}
+                  value={wikiQuery}
+                  onChangeText={setWikiQuery}
+                  onSubmitEditing={() => wikiSearch(wikiQuery)}
+                  returnKeyType="search"
+                  autoCapitalize="words"
+                />
+                <TouchableOpacity
+                  style={[styles.wikiSearchBtn, wikiLoading && styles.wikiSearchBtnDisabled]}
+                  onPress={() => wikiSearch(wikiQuery)}
+                  disabled={wikiLoading || !wikiQuery.trim()}
+                >
+                  {wikiLoading
+                    ? <ActivityIndicator size="small" color="#000" />
+                    : <Text style={styles.wikiSearchBtnText}>Search</Text>
+                  }
+                </TouchableOpacity>
+              </View>
+
+              {wikiError && (
+                <Text style={styles.wikiError}>{wikiError}</Text>
+              )}
+
+              {wikiItem && (
+                <View style={styles.wikiResult}>
+                  <Text style={styles.wikiResultName}>{wikiItem.name}</Text>
+
+                  <View style={styles.wikiResultMeta}>
+                    {wikiItem.weapon && (
+                      <Text style={styles.wikiResultSub}>
+                        DMG {wikiItem.weapon.damage}  Delay {wikiItem.weapon.delay}
+                      </Text>
+                    )}
+                    {wikiItem.weaponType && (
+                      <Text style={styles.wikiResultSub}>{wikiItem.weaponType}</Text>
+                    )}
+                    {wikiItem.itemLevel && (
+                      <Text style={styles.wikiResultSub}>iLv {wikiItem.itemLevel}</Text>
+                    )}
+                  </View>
+
+                  {wikiItem.jobs.length > 0 && (
+                    <Text style={styles.wikiResultJobs}>
+                      Jobs: {wikiItem.jobs.join(' ')}
+                    </Text>
+                  )}
+
+                  {/* Key stats preview */}
+                  {Object.keys(wikiItem.stats).length > 0 && (
+                    <View style={styles.wikiStatGrid}>
+                      {Object.entries(wikiItem.stats)
+                        .filter(([, v]) => typeof v === 'number' && v !== 0)
+                        .slice(0, 8)
+                        .map(([k, v]) => (
+                          <Text key={k} style={styles.wikiStat}>
+                            {statLabel(k)} {(v as number) > 0 ? `+${v}` : v}
+                          </Text>
+                        ))}
+                    </View>
+                  )}
+
+                  <View style={styles.wikiActions}>
+                    <TouchableOpacity
+                      style={[styles.wikiActionBtn, { borderColor: C.aColor }]}
+                      onPress={() => { setItemA(wikiItem); setExplanation(null); }}
+                    >
+                      <Text style={[styles.wikiActionText, { color: C.aColor }]}>Set as A</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.wikiActionBtn, { borderColor: C.bColor }]}
+                      onPress={() => { setItemB(wikiItem); setExplanation(null); }}
+                    >
+                      <Text style={[styles.wikiActionText, { color: C.bColor }]}>Set as B</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.wikiActionBtn, { borderColor: C.border }]}
+                      onPress={wikiClear}
+                    >
+                      <Text style={[styles.wikiActionText, { color: C.muted }]}>Clear</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
+        </View>
+      )}
 
       {/* Item list */}
       {candidates.length > 0 && (
@@ -339,4 +452,26 @@ const styles = StyleSheet.create({
   explanationBox: { backgroundColor: '#1C2128', borderRadius: 8, padding: 16, borderWidth: 1, borderColor: C.border },
   explanationLabel: { color: C.yellow, fontWeight: '700', marginBottom: 8, fontSize: 13 },
   explanationText: { color: C.text, lineHeight: 22 },
+
+  // BGWiki panel
+  wikiPanel:        { marginTop: 14, borderRadius: 8, borderWidth: 1, borderColor: C.border, overflow: 'hidden' },
+  wikiToggle:       { backgroundColor: C.surface, paddingHorizontal: 14, paddingVertical: 10 },
+  wikiToggleText:   { color: C.muted, fontSize: 13, fontWeight: '600' },
+  wikiBody:         { backgroundColor: '#0A0F16', padding: 12, gap: 10 },
+  wikiInputRow:     { flexDirection: 'row', gap: 8 },
+  wikiInput:        { flex: 1, backgroundColor: C.surface, borderRadius: 6, borderWidth: 1, borderColor: C.border, color: C.text, paddingHorizontal: 12, paddingVertical: 8, fontSize: 14 },
+  wikiSearchBtn:    { backgroundColor: C.yellow, borderRadius: 6, paddingHorizontal: 16, justifyContent: 'center', alignItems: 'center', minWidth: 72 },
+  wikiSearchBtnDisabled: { opacity: 0.5 },
+  wikiSearchBtnText:{ color: '#000', fontWeight: '700', fontSize: 14 },
+  wikiError:        { color: C.red, fontSize: 13 },
+  wikiResult:       { backgroundColor: C.surface, borderRadius: 8, padding: 12, borderWidth: 1, borderColor: C.border, gap: 8 },
+  wikiResultName:   { color: C.text, fontWeight: '700', fontSize: 16 },
+  wikiResultMeta:   { flexDirection: 'row', gap: 12, flexWrap: 'wrap' },
+  wikiResultSub:    { color: C.muted, fontSize: 12 },
+  wikiResultJobs:   { color: C.muted, fontSize: 12 },
+  wikiStatGrid:     { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  wikiStat:         { color: C.green, fontSize: 12, backgroundColor: '#1C2128', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 4 },
+  wikiActions:      { flexDirection: 'row', gap: 8, marginTop: 4 },
+  wikiActionBtn:    { flex: 1, borderWidth: 1, borderRadius: 6, paddingVertical: 8, alignItems: 'center' },
+  wikiActionText:   { fontWeight: '700', fontSize: 13 },
 });
