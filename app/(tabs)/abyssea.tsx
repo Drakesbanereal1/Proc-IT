@@ -99,7 +99,7 @@ const yellowProcs: SpellGroup[] = [
 const ProcHeader = ({ title, color, open, onToggle }: { title: string; color: string; open: boolean; onToggle: () => void }) => (
   <TouchableOpacity style={styles.procHeaderRow} onPress={onToggle} activeOpacity={0.7}>
     <Text style={[styles.procHeader, { color }]}>{title}</Text>
-    <Text style={[styles.chevron, { color }]}>{open ? '▼' : '▶'}</Text>
+    <Text style={styles.toggleHint}>{open ? 'tap to close' : 'tap to open'}</Text>
   </TouchableOpacity>
 );
 
@@ -224,9 +224,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "700",
   },
-  chevron: {
-    fontSize: 16,
-    fontWeight: "700",
+  toggleHint: {
+    fontSize: 12,
+    color: "#6B7280",
+    fontStyle: "italic",
   },
   subHeader: {
     fontSize: 18,
