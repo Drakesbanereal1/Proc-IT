@@ -427,7 +427,7 @@ export default function Sortie() {
           {sortieBosses.map(b => <BossCard key={b.id} boss={b} />)}
 
           {/* ── Gallimaufry Tables ── */}
-          <Text style={styles.galliTitle}>Minor NM Gallimaufry</Text>
+          <Text style={styles.galliTitle}>Mini Boss Gallimaufry</Text>
           <View style={styles.galliTable}>
             <View style={styles.galliHeaderRow}>
               <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
@@ -452,7 +452,7 @@ export default function Sortie() {
             ))}
           </View>
 
-          <Text style={styles.galliTitle}>Major NM Gallimaufry</Text>
+          <Text style={styles.galliTitle}>Major Boss Gallimaufry</Text>
           <View style={styles.galliTable}>
             <View style={styles.galliHeaderRow}>
               <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
