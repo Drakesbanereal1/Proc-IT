@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 
@@ -155,6 +156,21 @@ function SpellCard({ spell }: { spell: PhysSpell }) {
   );
 }
 
+// ─── COLLAPSIBLE SECTION ─────────────────────────────────────────────────────
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View>
+      <TouchableOpacity style={styles.sectionHeaderRow} onPress={() => setOpen(o => !o)} activeOpacity={0.7}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <Text style={styles.toggleHint}>{open ? 'tap to close' : 'tap to open'}</Text>
+      </TouchableOpacity>
+      {open && children}
+    </View>
+  );
+}
+
 // ─── MAIN ────────────────────────────────────────────────────────────────────
 
 export default function BLU() {
@@ -174,62 +190,64 @@ export default function BLU() {
       </Text>
 
       {/* ── Physical Spells ── */}
-      <Text style={styles.sectionTitle}>Physical Spells</Text>
-      <Text style={styles.sectionNote}>Organized by point cost (1–5 pts)</Text>
-
-      {grouped.map(({ pts, spells }) => {
-        const ptColor = PT_COLORS[pts];
-        return (
-          <View key={pts} style={styles.ptGroup}>
-            <View style={styles.ptHeader}>
-              <View style={[styles.ptHeaderBadge, { backgroundColor: ptColor + "25", borderColor: ptColor }]}>
-                <Text style={[styles.ptHeaderText, { color: ptColor }]}>{pts} Point{pts > 1 ? "s" : ""}</Text>
+      <Section title="Physical Spells">
+        <Text style={styles.sectionNote}>Organized by point cost (1–5 pts)</Text>
+        {grouped.map(({ pts, spells }) => {
+          const ptColor = PT_COLORS[pts];
+          return (
+            <View key={pts} style={styles.ptGroup}>
+              <View style={styles.ptHeader}>
+                <View style={[styles.ptHeaderBadge, { backgroundColor: ptColor + "25", borderColor: ptColor }]}>
+                  <Text style={[styles.ptHeaderText, { color: ptColor }]}>{pts} Point{pts > 1 ? "s" : ""}</Text>
+                </View>
               </View>
+              {spells.map((s) => (
+                <SpellCard key={s.name} spell={s} />
+              ))}
             </View>
-            {spells.map((s) => (
-              <SpellCard key={s.name} spell={s} />
-            ))}
-          </View>
-        );
-      })}
+          );
+        })}
+      </Section>
 
       {/* ── Self-Skillchain Reference ── */}
-      <Text style={styles.sectionTitle}>Self-Skillchain Guide</Text>
-      <Text style={styles.sectionNote}>
-        Requires Chain Affinity (x2 with merits). Opener → Closer format.
-        *Bloodrake requires two BLUs.
-      </Text>
-      {SELF_SC.map((pair, i) => {
-        const c = SC_LEVEL_COLORS[pair.level] ?? "#9CA3AF";
-        return (
-          <View key={i} style={styles.scPairCard}>
-            <View style={styles.scPairLeft}>
-              <Text style={styles.scPairOpener}>{pair.opener}</Text>
-              <Text style={styles.scPairArrow}>→</Text>
-              <Text style={styles.scPairCloser}>{pair.closer}</Text>
+      <Section title="Self-Skillchain Guide">
+        <Text style={styles.sectionNote}>
+          Requires Chain Affinity (x2 with merits). Opener → Closer format.
+          *Bloodrake requires two BLUs.
+        </Text>
+        {SELF_SC.map((pair, i) => {
+          const c = SC_LEVEL_COLORS[pair.level] ?? "#9CA3AF";
+          return (
+            <View key={i} style={styles.scPairCard}>
+              <View style={styles.scPairLeft}>
+                <Text style={styles.scPairOpener}>{pair.opener}</Text>
+                <Text style={styles.scPairArrow}>→</Text>
+                <Text style={styles.scPairCloser}>{pair.closer}</Text>
+              </View>
+              <View style={[styles.scPairResult, { backgroundColor: c + "20", borderColor: c }]}>
+                <Text style={[styles.scPairResultText, { color: c }]}>{pair.result}</Text>
+                <Text style={[styles.scPairLevel, { color: c }]}>Lv{pair.level}</Text>
+              </View>
             </View>
-            <View style={[styles.scPairResult, { backgroundColor: c + "20", borderColor: c }]}>
-              <Text style={[styles.scPairResultText, { color: c }]}>{pair.result}</Text>
-              <Text style={[styles.scPairLevel, { color: c }]}>Lv{pair.level}</Text>
-            </View>
-          </View>
-        );
-      })}
+          );
+        })}
+      </Section>
 
       {/* ── Job Abilities ── */}
-      <Text style={styles.sectionTitle}>Job Abilities</Text>
-      {JOB_ABILITIES.map((ja) => (
-        <View key={ja.name} style={styles.jaCard}>
-          <View style={styles.jaHeader}>
-            <Text style={styles.jaName}>{ja.name}</Text>
-            <View style={styles.jaMeta}>
-              <Text style={styles.jaLevel}>Lv{ja.level}</Text>
-              <Text style={styles.jaRecast}>{ja.recast}</Text>
+      <Section title="Job Abilities">
+        {JOB_ABILITIES.map((ja) => (
+          <View key={ja.name} style={styles.jaCard}>
+            <View style={styles.jaHeader}>
+              <Text style={styles.jaName}>{ja.name}</Text>
+              <View style={styles.jaMeta}>
+                <Text style={styles.jaLevel}>Lv{ja.level}</Text>
+                <Text style={styles.jaRecast}>{ja.recast}</Text>
+              </View>
             </View>
+            <Text style={styles.jaDesc}>{ja.desc}</Text>
           </View>
-          <Text style={styles.jaDesc}>{ja.desc}</Text>
-        </View>
-      ))}
+        ))}
+      </Section>
 
       <View style={{ height: 32 }} />
     </ScrollView>
@@ -244,8 +262,10 @@ const styles = StyleSheet.create({
   subtitle:     { fontSize: 13, color: "#9CA3AF", fontStyle: "italic", marginBottom: 20, lineHeight: 19 },
   highlight:    { color: "#7DD3FC", fontWeight: "700", fontStyle: "normal" },
 
-  sectionTitle: { fontSize: 18, fontWeight: "700", color: "#BEE3F8", marginTop: 24, marginBottom: 4, borderBottomWidth: 1, borderBottomColor: "#4A5568", paddingBottom: 5 },
+  sectionHeaderRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 24, marginBottom: 4, borderBottomWidth: 1, borderBottomColor: "#4A5568", paddingBottom: 5 },
+  sectionTitle: { fontSize: 18, fontWeight: "700", color: "#BEE3F8" },
   sectionNote:  { fontSize: 11, color: "#6B7280", fontStyle: "italic", marginBottom: 10 },
+  toggleHint:   { fontSize: 12, color: "#6B7280", fontStyle: "italic" },
 
   // Point groups
   ptGroup:      { marginBottom: 12 },
