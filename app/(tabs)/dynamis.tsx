@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { PROC_COLORS } from "../../constants/procs";
 
 // --- DATA STRUCTURES ---
@@ -38,24 +39,9 @@ const timeExtensionProcs: TimeExtensionProc[] = [
 ];
 
 const jobProcs: JobProc[] = [
-  {
-    jobs: "RNG, NIN, BST, MNK, THF",
-    procClass: "Job Abilities and Ready commands",
-    procRate: "~20%",
-    color: PROC_COLORS.yellow,
-  },
-  {
-    jobs: "BLM, WHM, RDM, SMN, BRD",
-    procClass: "Spells and Blood Pacts",
-    procRate: "~8%",
-    color: PROC_COLORS.blue,
-  },
-  {
-    jobs: "PLD, DRK, SAM, WAR, DRG",
-    procClass: "Weapon Skills and Automaton Attachments",
-    procRate: "~25%",
-    color: PROC_COLORS.red,
-  },
+  { jobs: "RNG, NIN, BST, MNK, THF", procClass: "Job Abilities and Ready commands", procRate: "~20%", color: PROC_COLORS.yellow },
+  { jobs: "BLM, WHM, RDM, SMN, BRD", procClass: "Spells and Blood Pacts",           procRate: "~8%",  color: PROC_COLORS.blue },
+  { jobs: "PLD, DRK, SAM, WAR, DRG", procClass: "Weapon Skills and Automaton Attachments", procRate: "~25%", color: PROC_COLORS.red },
 ];
 
 const jobDetails: JobCategory[] = [
@@ -91,6 +77,20 @@ const jobDetails: JobCategory[] = [
   }
 ];
 
+// --- COLLAPSIBLE SECTION ---
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.section}>
+      <TouchableOpacity style={styles.sectionHeader} onPress={() => setOpen(o => !o)} activeOpacity={0.7}>
+        <Text style={styles.procHeader}>{title}</Text>
+        <Text style={styles.toggleHint}>{open ? 'tap to close' : 'tap to open'}</Text>
+      </TouchableOpacity>
+      {open && children}
+    </View>
+  );
+}
+
 // --- MAIN COMPONENT ---
 export default function Dynamis() {
   return (
@@ -98,8 +98,7 @@ export default function Dynamis() {
       <Text style={styles.mainTitle}>Dynamis Procs</Text>
 
       {/* Time Extension-Proc Relationship */}
-      <View style={styles.section}>
-        <Text style={styles.procHeader}>Time Extension-Proc Relationship</Text>
+      <Section title="Time Extension-Proc Relationship">
         <View style={styles.table}>
           <View style={styles.tableHeaderRow}>
             <Text style={[styles.tableHeader, { flex: 1 }]}>#</Text>
@@ -118,34 +117,32 @@ export default function Dynamis() {
             </View>
           ))}
         </View>
-         <Text style={styles.footerNote}>*1% of your procs, not a 1% base rate.</Text>
-      </View>
+        <Text style={styles.footerNote}>*1% of your procs, not a 1% base rate.</Text>
+      </Section>
 
       {/* Beastman Job-Proc Relationship */}
-      <View style={styles.section}>
-        <Text style={styles.procHeader}>Beastman Job-Proc Relationship</Text>
+      <Section title="Beastman Job-Proc Relationship">
         <View style={styles.table}>
-            <View style={styles.tableHeaderRow}>
-                <Text style={[styles.tableHeader, { flex: 3 }]}>Monster Job</Text>
-                <Text style={[styles.tableHeader, { flex: 3 }]}>Proc Class</Text>
-                <Text style={[styles.tableHeader, { flex: 1, textAlign: 'right' }]}>Proc Rate</Text>
+          <View style={styles.tableHeaderRow}>
+            <Text style={[styles.tableHeader, { flex: 3 }]}>Monster Job</Text>
+            <Text style={[styles.tableHeader, { flex: 3 }]}>Proc Class</Text>
+            <Text style={[styles.tableHeader, { flex: 1, textAlign: 'right' }]}>Proc Rate</Text>
+          </View>
+          {jobProcs.map((proc, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={[styles.tableCell, { flex: 3 }]}>{proc.jobs}</Text>
+              <Text style={[styles.tableCell, { flex: 3, color: proc.color, fontWeight: 'bold' }]}>{proc.procClass}</Text>
+              <Text style={[styles.tableCell, { flex: 1, textAlign: 'right' }]}>{proc.procRate}</Text>
             </View>
-            {jobProcs.map((proc, index) => (
-                <View key={index} style={styles.tableRow}>
-                    <Text style={[styles.tableCell, { flex: 3 }]}>{proc.jobs}</Text>
-                    <Text style={[styles.tableCell, { flex: 3, color: proc.color, fontWeight: 'bold' }]}>{proc.procClass}</Text>
-                    <Text style={[styles.tableCell, { flex: 1, textAlign: 'right' }]}>{proc.procRate}</Text>
-                </View>
-            ))}
+          ))}
         </View>
         <Text style={styles.footerNote}>*Beastman Job-Proc Rates assumes 5 Time Extensions acquired</Text>
-      </View>
+      </Section>
 
       {/* Individual Job Weaknesses */}
-      <View style={styles.section}>
-        <Text style={styles.procHeader}>Individual Job Weaknesses</Text>
+      <Section title="Individual Job Weaknesses">
         {jobDetails.map((category, index) => (
-          <View key={index} style={{marginBottom: 20}}>
+          <View key={index} style={{ marginBottom: 20 }}>
             <Text style={styles.subHeader}>{category.name}</Text>
             {category.jobs.map((detail, i) => (
               <View key={i} style={styles.detailRow}>
@@ -155,13 +152,14 @@ export default function Dynamis() {
             ))}
           </View>
         ))}
-      </View>
-       <View style={styles.section}>
-        <Text style={styles.procHeader}>Dreamworld Dynamis</Text>
+      </Section>
+
+      {/* Dreamworld Dynamis */}
+      <Section title="Dreamworld Dynamis">
         <Text style={styles.description}>
           In Dreamworld Dynamis areas (Dynamis-Beaucedine, Dynamis-Xarcabard, and Dynamis-Valkurm), procs are simplified. Any weapon skill of the correct damage type (Slashing, Piercing, Blunt) for the zone will trigger the weakness, regardless of the monster's job.
         </Text>
-      </View>
+      </Section>
 
     </ScrollView>
   );
@@ -169,89 +167,22 @@ export default function Dynamis() {
 
 // --- STYLES ---
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 15,
-    paddingTop: 15,
-    backgroundColor: "#1A202C",
-  },
-  scrollContent: {
-    paddingBottom: 50, // Added padding to the bottom
-  },
-  mainTitle: {
-    fontSize: 28,
-    fontWeight: "800",
-    marginBottom: 20,
-    color: "#FFFFFF",
-  },
-  section: {
-    marginBottom: 30,
-  },
-  procHeader: {
-    fontSize: 22,
-    fontWeight: "700",
-    marginBottom: 15,
-    color: "#E5E7EB",
-  },
-  subHeader: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#A0AEC0",
-    marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#4A5568",
-    paddingBottom: 5,
-  },
-  table: {
-    backgroundColor: "#2D3748",
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  tableHeaderRow: {
-    flexDirection: 'row',
-    backgroundColor: '#1A202C',
-    padding: 10,
-  },
-  tableHeader: {
-    color: '#A0AEC0',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#4A5568',
-  },
-  tableCell: {
-    color: '#D1D5DB',
-    fontSize: 12,
-  },
-  detailRow: {
-      flexDirection: 'row',
-      paddingVertical: 8,
-      borderBottomWidth: 1,
-      borderBottomColor: '#2D3748'
-  },
-  detailJob: {
-      width: 50,
-      color: '#E5E7EB',
-      fontWeight: 'bold',
-  },
-  detailWeakness: {
-      flex: 1,
-      color: '#D1D5DB',
-  },
-  footerNote: {
-      fontStyle: 'italic',
-      color: '#9CA3AF',
-      fontSize: 12,
-      marginTop: 10,
-      textAlign: 'center',
-  },
-  description: {
-    fontSize: 14,
-    color: "#D1D5DB",
-    lineHeight: 20,
-  },
+  container:      { flex: 1, paddingHorizontal: 15, paddingTop: 15, backgroundColor: "#1A202C" },
+  scrollContent:  { paddingBottom: 50 },
+  mainTitle:      { fontSize: 28, fontWeight: "800", marginBottom: 20, color: "#FFFFFF" },
+  section:        { marginBottom: 16 },
+  sectionHeader:  { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#4A5568', paddingBottom: 8, marginBottom: 10 },
+  procHeader:     { fontSize: 22, fontWeight: "700", color: "#E5E7EB" },
+  toggleHint:     { fontSize: 12, color: '#6B7280', fontStyle: 'italic' },
+  subHeader:      { fontSize: 18, fontWeight: "600", color: "#A0AEC0", marginBottom: 10, borderBottomWidth: 1, borderBottomColor: "#4A5568", paddingBottom: 5 },
+  table:          { backgroundColor: "#2D3748", borderRadius: 8, overflow: 'hidden' },
+  tableHeaderRow: { flexDirection: 'row', backgroundColor: '#1A202C', padding: 10 },
+  tableHeader:    { color: '#A0AEC0', fontWeight: 'bold', fontSize: 12 },
+  tableRow:       { flexDirection: 'row', padding: 10, borderTopWidth: 1, borderTopColor: '#4A5568' },
+  tableCell:      { color: '#D1D5DB', fontSize: 12 },
+  detailRow:      { flexDirection: 'row', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#2D3748' },
+  detailJob:      { width: 50, color: '#E5E7EB', fontWeight: 'bold' },
+  detailWeakness: { flex: 1, color: '#D1D5DB' },
+  footerNote:     { fontStyle: 'italic', color: '#9CA3AF', fontSize: 12, marginTop: 10, textAlign: 'center' },
+  description:    { fontSize: 14, color: "#D1D5DB", lineHeight: 20 },
 });
