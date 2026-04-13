@@ -45,7 +45,7 @@ interface Family {
   resistances?: { weak?: string[]; low?: string[]; strong?: string[] };
 }
 
-const FAMILIES: Family[] = [
+const FAMILIES_RAW: Family[] = [
   {
     id: "orc", name: "Orc", category: "Beastmen",
     strat: "Crowd control the pack and prevent the boss's charm cycle by removing its aura with a physical WS from behind.",
@@ -246,6 +246,8 @@ const FAMILIES: Family[] = [
     key_mechanics: ["Dual giant system", "15% HP deactivation threshold", "Physical vulnerable when magic giant down", "Magic vulnerable when physical giant down"],
   },
 ];
+
+const FAMILIES = [...FAMILIES_RAW].sort((a, b) => a.name.localeCompare(b.name));
 
 // ─── CATEGORY COLORS ─────────────────────────────────────────────────────────
 
