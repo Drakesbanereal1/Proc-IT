@@ -574,26 +574,31 @@ export default function SkillchainBuilder() {
     });
 
     const grouped = new Map<string, { chain: SCResult; paths: { names: string[]; types: string[]; steps: number }[] }>();
-    const MAX = 600;
-    let totalFound = 0;
 
-    // Run DFS for each enabled step count
-    for (let numSteps = 2; numSteps <= activeSlots.length; numSteps++) {
-      if (!stepFilters[numSteps as keyof typeof stepFilters]) continue;
+    // Per-step cap so short chains don't crowd out long ones
+    const PER_STEP_CAP = 200;
+
+    // Run DFS largest → smallest so 6-step chains always get explored first
+    const enabledSteps = [6, 5, 4, 3, 2].filter(n =>
+      n <= activeSlots.length && stepFilters[n as keyof typeof stepFilters]
+    );
+
+    for (const numSteps of enabledSteps) {
       const window = slotOptions.slice(0, numSteps);
+      let stepFound = 0;
 
       const stack: { idx: number; names: string[]; types: string[]; props: SCProp[]; lastChain: SCResult | null }[] = [];
 
       // Seed stack with all WS from first slot
       for (const ws of window[0]) {
+        if (ws.properties.length === 0) continue; // skip no-property WS as openers
         stack.push({ idx: 1, names: [ws.name], types: [ws.wType], props: ws.properties as SCProp[], lastChain: null });
       }
 
-      while (stack.length > 0 && totalFound < MAX) {
+      while (stack.length > 0 && stepFound < PER_STEP_CAP) {
         const { idx, names, types, props, lastChain } = stack.pop()!;
 
         if (idx === numSteps) {
-          // Complete sequence — record if valid chain exists
           if (!lastChain) continue;
           if (!levelFilters[lastChain.level as keyof typeof levelFilters]) continue;
           const anyElem = Object.values(elemFilters).some(v => v);
@@ -604,12 +609,13 @@ export default function SkillchainBuilder() {
           const key = `${lastChain.name}-${lastChain.level}`;
           if (!grouped.has(key)) grouped.set(key, { chain: lastChain, paths: [] });
           grouped.get(key)!.paths.push({ names, types, steps: numSteps });
-          totalFound++;
+          stepFound++;
           continue;
         }
 
         // Extend path — try each WS in next slot
         for (const ws of window[idx]) {
+          if (ws.properties.length === 0) continue;
           const chain = getBestChain(props, ws.properties as SCProp[]);
           if (!chain) continue;
           stack.push({ idx: idx + 1, names: [...names, ws.name], types: [...types, ws.wType], props: chain.properties as SCProp[], lastChain: chain });
