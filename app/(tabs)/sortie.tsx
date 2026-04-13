@@ -427,7 +427,7 @@ export default function Sortie() {
           {sortieBosses.map(b => <BossCard key={b.id} boss={b} />)}
 
           {/* ── Gallimaufry Tables ── */}
-          <Text style={styles.galliTitle}>Mini Boss Gallimaufry</Text>
+          <Text style={styles.galliTitle}>Minor NM Gallimaufry</Text>
           <View style={styles.galliTable}>
             <View style={styles.galliHeaderRow}>
               <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
@@ -452,7 +452,7 @@ export default function Sortie() {
             ))}
           </View>
 
-          <Text style={styles.galliTitle}>Major Boss Gallimaufry</Text>
+          <Text style={styles.galliTitle}>Major NM Gallimaufry</Text>
           <View style={styles.galliTable}>
             <View style={styles.galliHeaderRow}>
               <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
@@ -460,14 +460,14 @@ export default function Sortie() {
               <Text style={[styles.galliHeader, { flex: 2, textAlign: 'right' }]}>Gallimaufry</Text>
             </View>
             {[
-              { sector: 'A', nm: 'Ghatjot',   galli: '2000' },
-              { sector: 'B', nm: 'Leshonn',   galli: '2000' },
-              { sector: 'C', nm: 'Skomora',   galli: '2000' },
-              { sector: 'D', nm: 'Degei',     galli: '2000' },
+              { sector: 'A', nm: 'Ghatjot',   galli: '2000'  },
+              { sector: 'B', nm: 'Leshonn',   galli: ''      },
+              { sector: 'C', nm: 'Skomora',   galli: ''      },
+              { sector: 'D', nm: 'Degei',     galli: ''      },
               { sector: 'E', nm: 'Dhartok',   galli: '10000' },
-              { sector: 'F', nm: 'Gartell',   galli: '10000' },
-              { sector: 'G', nm: 'Triboulex', galli: '10000' },
-              { sector: 'H', nm: 'Aita',      galli: '10000' },
+              { sector: 'F', nm: 'Gartell',   galli: ''      },
+              { sector: 'G', nm: 'Triboulex', galli: ''      },
+              { sector: 'H', nm: 'Aita',      galli: ''      },
             ].map((r, i) => (
               <View key={i} style={[styles.galliRow, i % 2 === 1 && styles.galliRowAlt]}>
                 <Text style={[styles.galliCell, { flex: 1, fontWeight: '700', color: C.yellow }]}>{r.sector}</Text>
