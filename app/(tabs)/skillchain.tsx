@@ -112,252 +112,292 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
       { name: "Final Heaven",     level: "Relic",    properties: ["Light", "Fusion"] },
       { name: "Victory Smite",    level: "Empyrean", properties: ["Fusion", "Impaction"] },
       { name: "Ascetic's Fury",   level: "Mythic",   properties: ["Distortion", "Reverberation"] },
-      { name: "Stringing Pummel", level: "Mythic",   properties: ["Darkness", "Distortion", "Reverberation"] },
-      { name: "Maru Kala",        level: "Prime",    properties: ["Light", "Fragmentation"] },
+      { name: "Stringing Pummel", level: "Mythic",   properties: ["Gravitation", "Liquefaction"] },
+      { name: "Maru Kala",        level: "Prime",    properties: ["Detonation", "Compression", "Distortion"] },
     ],
   },
   {
     name: "Dagger",
     skills: [
-      { name: "Wasp Sting",    level: 50,        properties: ["Scission"] },
-      { name: "Viper Bite",    level: 100,       properties: ["Scission"] },
-      { name: "Gust Slash",    level: 80,        properties: ["Detonation"] },
-      { name: "Shadowstitch",  level: 70,        properties: ["Reverberation"] },
-      { name: "Cyclone",       level: 125,       properties: ["Detonation", "Impaction"] },
-      { name: "Dancing Edge",  level: 200,       properties: ["Scission", "Detonation"] },
-      { name: "Shark Bite",    level: 225,       properties: ["Scission"] },
-      { name: "Evisceration",  level: 230,       properties: ["Gravitation", "Transfixion"] },
-      { name: "Aeolian Edge",  level: "Quest",   properties: ["Scission", "Detonation", "Impaction"] },
-      { name: "Exenterator",   level: "Aeonic",  properties: ["Light", "Fragmentation", "Scission"] },
-      { name: "Mercy Stroke",  level: "Relic",    properties: ["Compression", "Transfixion"] },
-      { name: "Mandalic Stab", level: "Mythic",   properties: ["Distortion", "Scission"] },
-      { name: "Rudra's Storm", level: "Empyrean", properties: ["Darkness", "Distortion", "Scission"] },
-      { name: "Aeneas Strike", level: "Prime",    properties: ["Light", "Fragmentation", "Scission"] },
+      { name: "Wasp Sting",      level: 50,         properties: ["Scission"] },
+      { name: "Gust Slash",      level: 40,         properties: ["Detonation"] },
+      { name: "Shadowstitch",    level: 70,         properties: ["Reverberation"] },
+      { name: "Viper Bite",      level: 100,        properties: ["Scission"] },
+      { name: "Cyclone",         level: 125,        properties: ["Detonation", "Impaction"] },
+      { name: "Energy Steal",    level: 150,        properties: [] },
+      { name: "Energy Drain",    level: 175,        properties: [] },
+      { name: "Dancing Edge",    level: 200,        properties: ["Scission", "Detonation"] },
+      { name: "Shark Bite",      level: 225,        properties: ["Scission"] },
+      { name: "Evisceration",    level: "Quest",    properties: ["Gravitation", "Transfixion"] },
+      { name: "Aeolian Edge",    level: 290,        properties: ["Scission", "Detonation", "Impaction"] },
+      { name: "Exenterator",     level: "Aeonic",   properties: ["Light", "Fragmentation", "Scission"] },
+      { name: "Mercy Stroke",    level: "Relic",    properties: ["Compression", "Transfixion"] },
+      { name: "Rudra's Storm",   level: "Empyrean", properties: ["Darkness", "Distortion", "Scission"] },
+      { name: "Mandalic Stab",   level: "Mythic",   properties: ["Distortion", "Scission"] },
+      { name: "Mordant Rime",    level: "Mythic",   properties: ["Fragmentation", "Distortion"] },
+      { name: "Pyrrhic Kleos",   level: "Mythic",   properties: ["Distortion", "Scission"] },
+      { name: "Ruthless Stroke", level: "Prime",    properties: ["Liquefaction", "Impaction", "Fragmentation"] },
     ],
   },
   {
     name: "Sword",
     skills: [
-      { name: "Fast Blade",      level: 5,         properties: ["Scission"] },
-      { name: "Burning Blade",   level: 50,        properties: ["Liquefaction"] },
-      { name: "Flat Blade",      level: 60,        properties: ["Impaction"] },
-      { name: "Red Lotus Blade", level: 50,        properties: ["Liquefaction", "Detonation"] },
-      { name: "Circle Blade",    level: 100,       properties: ["Reverberation", "Impaction"] },
-      { name: "Vorpal Blade",    level: 200,       properties: ["Scission", "Impaction"] },
-      { name: "Swift Blade",     level: 225,       properties: ["Gravitation"] },
-      { name: "Savage Blade",    level: "Quest",   properties: ["Fragmentation", "Scission"] },
-      { name: "Requiescat",        level: "Aeonic",  properties: ["Darkness", "Gravitation", "Scission"] },
-      { name: "Knights of Round",  level: "Relic",    properties: ["Light", "Fusion"] },
-      { name: "Death Blossom",     level: "Mythic",   properties: ["Fragmentation", "Reverberation"] },
-      { name: "Chant du Cygne",    level: "Empyrean", properties: ["Darkness", "Distortion", "Transfixion"] },
-      { name: "Caliburnus",        level: "Prime",    properties: ["Light", "Fusion", "Scission"] },
+      { name: "Fast Blade",       level: 5,         properties: ["Scission"] },
+      { name: "Burning Blade",    level: 20,        properties: ["Liquefaction"] },
+      { name: "Red Lotus Blade",  level: 50,        properties: ["Liquefaction", "Detonation"] },
+      { name: "Flat Blade",       level: 75,        properties: ["Impaction"] },
+      { name: "Shining Blade",    level: 100,       properties: ["Transfixion"] },
+      { name: "Seraph Blade",     level: 125,       properties: ["Transfixion"] },
+      { name: "Circle Blade",     level: 150,       properties: ["Reverberation", "Impaction"] },
+      { name: "Spirits Within",   level: 175,       properties: [] },
+      { name: "Vorpal Blade",     level: 200,       properties: ["Scission", "Impaction"] },
+      { name: "Swift Blade",      level: 300,       properties: ["Gravitation"] },
+      { name: "Sanguine Blade",   level: 290,       properties: [] },
+      { name: "Savage Blade",     level: "Quest",   properties: ["Fragmentation", "Scission"] },
+      { name: "Requiescat",       level: "Aeonic",  properties: ["Darkness", "Gravitation", "Scission"] },
+      { name: "Knights of Round", level: "Relic",   properties: ["Light", "Fusion"] },
+      { name: "Chant du Cygne",   level: "Empyrean",properties: ["Darkness", "Distortion", "Transfixion"] },
+      { name: "Death Blossom",    level: "Mythic",  properties: ["Fragmentation", "Reverberation"] },
+      { name: "Atonement",        level: "Mythic",  properties: ["Fusion", "Reverberation"] },
+      { name: "Expiacion",        level: "Mythic",  properties: ["Distortion", "Scission"] },
+      { name: "Imperator",        level: "Prime",   properties: ["Detonation", "Compression", "Distortion"] },
     ],
   },
   {
     name: "Great Sword",
     skills: [
-      { name: "Hard Slash",       level: 5,         properties: ["Scission"] },
-      { name: "Power Slash",      level: 30,        properties: ["Transfixion"] },
-      { name: "Frostbite",        level: 125,       properties: ["Induration"] },
-      { name: "Freezebite",       level: 150,       properties: ["Detonation", "Induration"] },
-      { name: "Shockwave",        level: 100,       properties: ["Reverberation"] },
-      { name: "Sickle Moon",      level: 150,       properties: ["Scission", "Impaction"] },
-      { name: "Spinning Slash",   level: 225,       properties: ["Fragmentation"] },
-      { name: "Ground Strike",    level: "Quest",   properties: ["Fragmentation"] },
-      { name: "Herculean Slash",  level: "Quest",   properties: ["Detonation", "Induration", "Impaction"] },
-      { name: "Resolution",        level: "Aeonic",  properties: ["Light", "Fragmentation", "Scission"] },
-      { name: "Scourge",           level: "Relic",    properties: ["Gravitation", "Distortion"] },
-      { name: "Torcleaver",        level: "Mythic",   properties: ["Distortion", "Impaction"] },
-      { name: "Epeolatry Strike",  level: "Prime",    properties: ["Light", "Fragmentation", "Scission"] },
+      { name: "Hard Slash",      level: 5,         properties: ["Scission"] },
+      { name: "Power Slash",     level: 30,        properties: ["Transfixion"] },
+      { name: "Frostbite",       level: 70,        properties: ["Induration"] },
+      { name: "Freezebite",      level: 100,       properties: ["Detonation", "Induration"] },
+      { name: "Shockwave",       level: 150,       properties: ["Reverberation"] },
+      { name: "Crescent Moon",   level: 175,       properties: ["Reverberation", "Induration"] },
+      { name: "Sickle Moon",     level: 200,       properties: ["Scission", "Impaction"] },
+      { name: "Spinning Slash",  level: 225,       properties: ["Fragmentation"] },
+      { name: "Ground Strike",   level: "Quest",   properties: ["Fragmentation"] },
+      { name: "Herculean Slash", level: 290,       properties: ["Detonation", "Induration", "Impaction"] },
+      { name: "Resolution",      level: "Aeonic",  properties: ["Light", "Fragmentation", "Scission"] },
+      { name: "Scourge",         level: "Relic",   properties: ["Gravitation", "Distortion"] },
+      { name: "Torcleaver",      level: "Empyrean",properties: ["Distortion", "Impaction"] },
+      { name: "Dimidiation",     level: "Ergon",   properties: ["Light", "Fragmentation"] },
+      { name: "Fimbulvetr",      level: "Prime",   properties: ["Detonation", "Compression", "Distortion"] },
     ],
   },
   {
     name: "Axe",
     skills: [
-      { name: "Raging Axe",    level: 50,        properties: ["Detonation", "Impaction"] },
-      { name: "Smash Axe",     level: 100,       properties: ["Reverberation", "Induration"] },
-      { name: "Gale Axe",      level: 125,       properties: ["Detonation"] },
-      { name: "Avalanche Axe", level: 150,       properties: ["Scission", "Impaction"] },
+      { name: "Raging Axe",    level: 5,         properties: ["Detonation", "Impaction"] },
+      { name: "Smash Axe",     level: 40,        properties: ["Reverberation", "Induration"] },
+      { name: "Gale Axe",      level: 70,        properties: ["Detonation"] },
+      { name: "Avalanche Axe", level: 100,       properties: ["Scission", "Impaction"] },
+      { name: "Spinning Axe",  level: 150,       properties: ["Scission", "Detonation"] },
       { name: "Rampage",       level: 175,       properties: ["Scission"] },
       { name: "Calamity",      level: 200,       properties: ["Scission", "Impaction"] },
       { name: "Mistral Axe",   level: 225,       properties: ["Fusion"] },
       { name: "Decimation",    level: "Quest",   properties: ["Fusion", "Reverberation"] },
-      { name: "Ruinator",          level: "Aeonic",  properties: ["Darkness", "Distortion", "Detonation"] },
-      { name: "Onslaught",         level: "Relic",    properties: ["Distortion"] },
-      { name: "Primal Rend",       level: "Mythic",   properties: ["Light", "Fragmentation", "Detonation"] },
-      { name: "Dolichenus Strike", level: "Prime",    properties: ["Darkness", "Distortion", "Detonation"] },
+      { name: "Bora Axe",      level: 290,       properties: ["Reverberation", "Scission"] },
+      { name: "Ruinator",      level: "Aeonic",  properties: ["Darkness", "Distortion", "Detonation"] },
+      { name: "Onslaught",     level: "Relic",   properties: ["Distortion"] },
+      { name: "Cloudsplitter", level: "Empyrean",properties: ["Darkness", "Fragmentation"] },
+      { name: "Primal Rend",   level: "Mythic",  properties: ["Light", "Fragmentation", "Detonation"] },
+      { name: "Blitz",         level: "Prime",   properties: ["Liquefaction", "Impaction", "Fragmentation"] },
     ],
   },
   {
     name: "Great Axe",
     skills: [
-      { name: "Shield Break",   level: 30,        properties: ["Impaction"] },
-      { name: "Iron Tempest",   level: 50,        properties: ["Scission"] },
-      { name: "Sturmwind",      level: 100,       properties: ["Scission", "Reverberation"] },
-      { name: "Armor Break",    level: 150,       properties: ["Impaction"] },
-      { name: "Keen Edge",      level: 200,       properties: ["Compression"] },
-      { name: "Raging Rush",    level: 175,       properties: ["Reverberation", "Induration"] },
-      { name: "Full Break",     level: 225,       properties: ["Distortion"] },
-      { name: "Steel Cyclone",  level: "Quest",   properties: ["Distortion", "Detonation"] },
-      { name: "Fell Cleave",    level: "Quest",   properties: ["Scission", "Detonation"] },
-      { name: "Upheaval",         level: "Aeonic",  properties: ["Light", "Fusion", "Compression"] },
-      { name: "Metatron Torment", level: "Relic",    properties: ["Fusion"] },
-      { name: "King's Justice",   level: "Mythic",   properties: ["Fusion", "Impaction"] },
-      { name: "Ukko's Fury",      level: "Empyrean", properties: ["Light", "Fusion", "Compression"] },
-      { name: "Helheim Strike",   level: "Prime",    properties: ["Darkness", "Gravitation", "Distortion"] },
+      { name: "Shield Break",    level: 5,         properties: ["Impaction"] },
+      { name: "Iron Tempest",    level: 40,        properties: ["Scission"] },
+      { name: "Sturmwind",       level: 70,        properties: ["Scission", "Reverberation"] },
+      { name: "Armor Break",     level: 100,       properties: ["Impaction"] },
+      { name: "Keen Edge",       level: 150,       properties: ["Compression"] },
+      { name: "Weapon Break",    level: 175,       properties: [] },
+      { name: "Raging Rush",     level: 175,       properties: ["Reverberation", "Induration"] },
+      { name: "Full Break",      level: 225,       properties: ["Distortion"] },
+      { name: "Steel Cyclone",   level: "Quest",   properties: ["Distortion", "Detonation"] },
+      { name: "Fell Cleave",     level: 300,       properties: ["Scission", "Detonation"] },
+      { name: "Upheaval",        level: "Aeonic",  properties: ["Light", "Fusion", "Compression"] },
+      { name: "Metatron Torment",level: "Relic",   properties: ["Fusion"] },
+      { name: "Ukko's Fury",     level: "Empyrean",properties: ["Light", "Fusion", "Compression"] },
+      { name: "King's Justice",  level: "Mythic",  properties: ["Fusion", "Impaction"] },
+      { name: "Disaster",        level: "Prime",   properties: ["Transfixion", "Scission", "Gravitation"] },
     ],
   },
   {
     name: "Scythe",
     skills: [
-      { name: "Slice",            level: 5,         properties: ["Scission"] },
-      { name: "Dark Harvest",     level: 30,        properties: ["Reverberation"] },
-      { name: "Shadow of Death",  level: 70,        properties: ["Reverberation", "Induration"] },
-      { name: "Nightmare Scythe", level: 100,       properties: ["Scission", "Compression"] },
-      { name: "Spinning Scythe",  level: 150,       properties: ["Scission", "Reverberation"] },
-      { name: "Vorpal Scythe",    level: 175,       properties: ["Scission", "Transfixion"] },
-      { name: "Guillotine",       level: 200,       properties: ["Induration"] },
-      { name: "Cross Reaper",     level: 225,       properties: ["Distortion"] },
-      { name: "Spiral Hell",      level: "Quest",   properties: ["Distortion", "Scission"] },
-      { name: "Infernal Scythe",  level: "Quest",   properties: ["Reverberation", "Compression"] },
-      { name: "Entropy",           level: "Aeonic",  properties: ["Darkness", "Gravitation", "Reverberation"] },
-      { name: "Catastrophe",       level: "Relic",    properties: ["Darkness", "Gravitation", "Reverberation"] },
-      { name: "Insurgency",        level: "Mythic",   properties: ["Distortion", "Scission"] },
-      { name: "Quietus",           level: "Empyrean", properties: ["Darkness", "Distortion", "Scission"] },
-      { name: "Apocalypse Strike", level: "Prime",    properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Slice",           level: 5,         properties: ["Scission"] },
+      { name: "Dark Harvest",    level: 30,        properties: ["Reverberation"] },
+      { name: "Shadow of Death", level: 70,        properties: ["Reverberation", "Induration"] },
+      { name: "Nightmare Scythe",level: 100,       properties: ["Scission", "Compression"] },
+      { name: "Spinning Scythe", level: 125,       properties: ["Scission", "Reverberation"] },
+      { name: "Vorpal Scythe",   level: 150,       properties: ["Scission", "Transfixion"] },
+      { name: "Guillotine",      level: 200,       properties: ["Induration"] },
+      { name: "Cross Reaper",    level: 225,       properties: ["Distortion"] },
+      { name: "Spiral Hell",     level: "Quest",   properties: ["Distortion", "Scission"] },
+      { name: "Infernal Scythe", level: 300,       properties: ["Reverberation", "Compression"] },
+      { name: "Entropy",         level: "Aeonic",  properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Catastrophe",     level: "Relic",   properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Quietus",         level: "Empyrean",properties: ["Darkness", "Distortion", "Scission"] },
+      { name: "Insurgency",      level: "Mythic",  properties: ["Distortion", "Scission"] },
+      { name: "Origin",          level: "Prime",   properties: ["Induration", "Reverberation", "Fusion"] },
     ],
   },
   {
     name: "Polearm",
     skills: [
       { name: "Double Thrust",   level: 5,         properties: ["Transfixion"] },
+      { name: "Thunder Thrust",  level: 30,        properties: ["Impaction", "Transfixion"] },
       { name: "Raiden Thrust",   level: 70,        properties: ["Impaction", "Transfixion"] },
-      { name: "Thunder Thrust",  level: 100,       properties: ["Impaction", "Transfixion"] },
-      { name: "Leg Sweep",       level: 150,       properties: ["Impaction"] },
-      { name: "Penta Thrust",    level: 175,       properties: ["Compression"] },
-      { name: "Vorpal Thrust",   level: 200,       properties: ["Reverberation", "Transfixion"] },
+      { name: "Leg Sweep",       level: 100,       properties: ["Impaction"] },
+      { name: "Penta Thrust",    level: 150,       properties: ["Compression"] },
+      { name: "Vorpal Thrust",   level: 175,       properties: ["Reverberation", "Transfixion"] },
       { name: "Skewer",          level: 200,       properties: ["Impaction", "Transfixion"] },
       { name: "Wheeling Thrust", level: 225,       properties: ["Fusion"] },
       { name: "Impulse Drive",   level: "Quest",   properties: ["Gravitation", "Induration"] },
-      { name: "Sonic Thrust",    level: "Quest",   properties: ["Scission", "Transfixion"] },
-      { name: "Stardiver",         level: "Aeonic",  properties: ["Darkness", "Gravitation", "Transfixion"] },
-      { name: "Geirskogul",        level: "Relic",    properties: ["Darkness", "Gravitation", "Transfixion"] },
-      { name: "Drakesbane",        level: "Mythic",   properties: ["Fusion", "Transfixion"] },
-      { name: "Camlann's Torment", level: "Empyrean", properties: ["Darkness", "Gravitation", "Transfixion"] },
-      { name: "Gungnir Strike",    level: "Prime",    properties: ["Light", "Fusion", "Transfixion"] },
+      { name: "Sonic Thrust",    level: 300,       properties: ["Scission", "Transfixion"] },
+      { name: "Stardiver",       level: "Aeonic",  properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Geirskogul",      level: "Relic",   properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Camlann's Torment",level: "Empyrean",properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Drakesbane",      level: "Mythic",  properties: ["Fusion", "Transfixion"] },
+      { name: "Diarmuid",        level: "Prime",   properties: ["Transfixion", "Scission", "Gravitation"] },
     ],
   },
   {
     name: "Katana",
     skills: [
       { name: "Blade: Rin",   level: 5,         properties: ["Transfixion"] },
-      { name: "Blade: Retsu", level: 40,        properties: ["Scission"] },
-      { name: "Blade: Teki",  level: 50,        properties: ["Reverberation"] },
+      { name: "Blade: Retsu", level: 30,        properties: ["Scission"] },
+      { name: "Blade: Teki",  level: 70,        properties: ["Reverberation"] },
       { name: "Blade: To",    level: 100,       properties: ["Detonation", "Induration"] },
-      { name: "Blade: Chi",   level: 125,       properties: ["Impaction", "Transfixion"] },
+      { name: "Blade: Chi",   level: 150,       properties: ["Impaction", "Transfixion"] },
       { name: "Blade: Ei",    level: 175,       properties: ["Compression"] },
       { name: "Blade: Jin",   level: 200,       properties: ["Detonation", "Impaction"] },
       { name: "Blade: Ten",   level: 225,       properties: ["Gravitation"] },
       { name: "Blade: Ku",    level: "Quest",   properties: ["Gravitation", "Transfixion"] },
-      { name: "Blade: Yu",    level: "Quest",   properties: ["Scission", "Reverberation"] },
+      { name: "Blade: Yu",    level: 290,       properties: ["Scission", "Reverberation"] },
       { name: "Blade: Shun",  level: "Aeonic",  properties: ["Light", "Fusion", "Impaction"] },
-      { name: "Blade: Metsu", level: "Relic",    properties: ["Darkness", "Distortion", "Scission"] },
-      { name: "Blade: Kamu",  level: "Mythic",   properties: ["Light", "Fusion", "Impaction"] },
-      { name: "Blade: Hi",    level: "Empyrean", properties: ["Darkness", "Gravitation", "Transfixion"] },
-      { name: "Heishi Strike",level: "Prime",    properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Blade: Metsu", level: "Relic",   properties: ["Darkness", "Distortion", "Scission"] },
+      { name: "Blade: Hi",    level: "Empyrean",properties: ["Darkness", "Gravitation", "Transfixion"] },
+      { name: "Blade: Kamu",  level: "Mythic",  properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Zesho Meppo",  level: "Prime",   properties: ["Induration", "Reverberation", "Fusion"] },
     ],
   },
   {
     name: "Great Katana",
     skills: [
-      { name: "Tachi: Enpi",     level: 5,         properties: ["Transfixion", "Scission"] },
-      { name: "Tachi: Hobaku",   level: 50,        properties: ["Induration"] },
-      { name: "Tachi: Goten",    level: 100,       properties: ["Transfixion", "Impaction"] },
-      { name: "Tachi: Kagero",   level: 125,       properties: ["Liquefaction"] },
-      { name: "Tachi: Jinpu",    level: 150,       properties: ["Scission", "Detonation"] },
-      { name: "Tachi: Koki",     level: 175,       properties: ["Reverberation", "Impaction"] },
-      { name: "Tachi: Yukikaze", level: 200,       properties: ["Induration", "Detonation"] },
-      { name: "Tachi: Gekko",    level: 225,       properties: ["Distortion", "Reverberation"] },
-      { name: "Tachi: Kasha",    level: "Quest",   properties: ["Fusion", "Compression"] },
-      { name: "Tachi: Ageha",    level: "Quest",   properties: ["Compression", "Scission"] },
-      { name: "Tachi: Shoha",    level: "Aeonic",  properties: ["Light", "Fragmentation", "Compression"] },
-      { name: "Tachi: Kaiten",   level: "Relic",    properties: ["Light", "Fragmentation", "Compression"] },
-      { name: "Tachi: Rana",     level: "Mythic",   properties: ["Darkness", "Distortion", "Reverberation"] },
-      { name: "Tachi: Fudo",     level: "Empyrean", properties: ["Light", "Fragmentation", "Compression"] },
-      { name: "Masamune Strike", level: "Prime",    properties: ["Darkness", "Gravitation", "Compression"] },
+      { name: "Tachi: Enpi",    level: 5,         properties: ["Transfixion", "Scission"] },
+      { name: "Tachi: Hobaku",  level: 30,        properties: ["Induration"] },
+      { name: "Tachi: Goten",   level: 70,        properties: ["Transfixion", "Impaction"] },
+      { name: "Tachi: Kagero",  level: 100,       properties: ["Liquefaction"] },
+      { name: "Tachi: Jinpu",   level: 150,       properties: ["Scission", "Detonation"] },
+      { name: "Tachi: Koki",    level: 175,       properties: ["Reverberation", "Impaction"] },
+      { name: "Tachi: Yukikaze",level: 200,       properties: ["Induration", "Detonation"] },
+      { name: "Tachi: Gekko",   level: 225,       properties: ["Distortion", "Reverberation"] },
+      { name: "Tachi: Kasha",   level: "Quest",   properties: ["Fusion", "Compression"] },
+      { name: "Tachi: Ageha",   level: 300,       properties: ["Compression", "Scission"] },
+      { name: "Tachi: Shoha",   level: "Aeonic",  properties: ["Light", "Fragmentation", "Compression"] },
+      { name: "Tachi: Kaiten",  level: "Relic",   properties: ["Light", "Fragmentation", "Compression"] },
+      { name: "Tachi: Fudo",    level: "Empyrean",properties: ["Light", "Fragmentation", "Compression"] },
+      { name: "Tachi: Rana",    level: "Mythic",  properties: ["Darkness", "Distortion", "Reverberation"] },
+      { name: "Tachi: Mumei",   level: "Prime",   properties: ["Detonation", "Compression", "Distortion"] },
     ],
   },
   {
     name: "Club",
     skills: [
-      { name: "Shining Strike", level: 40,        properties: ["Impaction"] },
+      { name: "Shining Strike", level: 5,         properties: ["Impaction"] },
       { name: "Seraph Strike",  level: 40,        properties: ["Impaction"] },
-      { name: "Brainshaker",    level: 100,       properties: ["Reverberation"] },
+      { name: "Brainshaker",    level: 70,        properties: ["Reverberation"] },
+      { name: "Starlight",      level: 100,       properties: [] },
+      { name: "Moonlight",      level: 125,       properties: [] },
       { name: "Skullbreaker",   level: 150,       properties: ["Induration", "Reverberation"] },
       { name: "True Strike",    level: 175,       properties: ["Detonation", "Impaction"] },
       { name: "Judgment",       level: 200,       properties: ["Impaction"] },
-
+      { name: "Hexa Strike",    level: 220,       properties: ["Fusion"] },
       { name: "Black Halo",     level: "Quest",   properties: ["Fragmentation", "Compression"] },
-      { name: "Flash Nova",     level: "Quest",   properties: ["Reverberation", "Induration"] },
+      { name: "Flash Nova",     level: 290,       properties: ["Reverberation", "Induration"] },
       { name: "Realmrazer",     level: "Aeonic",  properties: ["Light", "Fusion", "Impaction"] },
-      { name: "Randgrith",      level: "Relic",    properties: ["Transfixion", "Reverberation"] },
-      { name: "Hexa Strike",    level: "Mythic",   properties: ["Fusion"] },
-      { name: "Dagan",          level: "Empyrean", properties: ["Light", "Fusion", "Impaction"] },
-      { name: "Yagrush Strike", level: "Prime",    properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Randgrith",      level: "Relic",   properties: ["Transfixion", "Reverberation"] },
+      { name: "Dagan",          level: "Empyrean",properties: ["Light", "Fusion", "Impaction"] },
+      { name: "Mystic Boon",    level: "Mythic",  properties: [] },
+      { name: "Exudation",      level: "Ergon",   properties: ["Darkness", "Fragmentation"] },
+      { name: "Dagda",          level: "Prime",   properties: ["Transfixion", "Scission", "Gravitation"] },
     ],
   },
   {
     name: "Staff",
     skills: [
-      { name: "Heavy Swing",   level: 5,         properties: ["Impaction"] },
-      { name: "Rock Crusher",  level: 50,        properties: ["Impaction"] },
-      { name: "Earth Crusher", level: 100,       properties: ["Detonation", "Impaction"] },
-      { name: "Starburst",     level: 150,       properties: ["Reverberation", "Compression"] },
-      { name: "Sunburst",      level: 175,       properties: ["Reverberation", "Compression"] },
-      { name: "Shell Crusher", level: 175,       properties: ["Detonation"] },
-      { name: "Full Swing",    level: 200,       properties: ["Liquefaction", "Impaction"] },
-      { name: "Retribution",   level: "Quest",   properties: ["Gravitation", "Reverberation"] },
-      { name: "Cataclysm",     level: "Quest",   properties: ["Reverberation", "Compression"] },
-      { name: "Shattersoul",      level: "Aeonic",  properties: ["Darkness", "Gravitation", "Induration"] },
-      { name: "Gate of Tartarus", level: "Relic",    properties: ["Darkness", "Gravitation", "Reverberation"] },
-      { name: "Omniscience",      level: "Mythic",   properties: ["Darkness", "Gravitation", "Induration"] },
-      { name: "Myrkr",            level: "Empyrean", properties: ["Reverberation", "Compression"] },
-      { name: "Nirvana Strike",   level: "Prime",    properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Heavy Swing",    level: 5,         properties: ["Impaction"] },
+      { name: "Rock Crusher",   level: 40,        properties: ["Impaction"] },
+      { name: "Earth Crusher",  level: 70,        properties: ["Detonation", "Impaction"] },
+      { name: "Starburst",      level: 100,       properties: ["Reverberation", "Compression"] },
+      { name: "Sunburst",       level: 150,       properties: ["Reverberation", "Compression"] },
+      { name: "Shell Crusher",  level: 175,       properties: ["Detonation"] },
+      { name: "Full Swing",     level: 200,       properties: ["Liquefaction", "Impaction"] },
+      { name: "Spirit Taker",   level: 215,       properties: [] },
+      { name: "Retribution",    level: "Quest",   properties: ["Gravitation", "Reverberation"] },
+      { name: "Cataclysm",      level: 290,       properties: ["Reverberation", "Compression"] },
+      { name: "Shattersoul",    level: "Aeonic",  properties: ["Darkness", "Gravitation", "Induration"] },
+      { name: "Gate of Tartarus",level: "Relic",  properties: ["Darkness", "Gravitation", "Reverberation"] },
+      { name: "Myrkr",          level: "Empyrean",properties: [] },
+      { name: "Vidohunir",      level: "Mythic",  properties: ["Fragmentation", "Distortion"] },
+      { name: "Garland of Bliss",level: "Mythic", properties: ["Fusion", "Reverberation"] },
+      { name: "Omniscience",    level: "Mythic",  properties: ["Darkness", "Gravitation", "Induration"] },
+      { name: "Oshala",         level: "Prime",   properties: ["Induration", "Reverberation", "Fusion"] },
     ],
   },
   {
     name: "Archery",
     skills: [
-      { name: "Flaming Arrow",   level: 30,        properties: ["Liquefaction", "Transfixion"] },
-      { name: "Piercing Arrow",  level: 60,        properties: ["Reverberation", "Transfixion"] },
-      { name: "Dulling Arrow",   level: 100,       properties: ["Liquefaction", "Transfixion"] },
-      { name: "Sidewinder",      level: 175,       properties: ["Reverberation", "Detonation", "Transfixion"] },
-      { name: "Blast Arrow",     level: 200,       properties: ["Induration", "Transfixion"] },
-      { name: "Arching Arrow",   level: 225,       properties: ["Fusion"] },
-      { name: "Empyreal Arrow",  level: "Quest",   properties: ["Fusion", "Transfixion"] },
-      { name: "Refulgent Arrow", level: "Quest",   properties: ["Reverberation", "Transfixion"] },
-      { name: "Apex Arrow",         level: "Aeonic",  properties: ["Light", "Fragmentation", "Transfixion"] },
-      { name: "Namas Arrow",        level: "Relic",    properties: ["Fusion", "Transfixion"] },
-      { name: "Jishnu's Radiance",  level: "Empyrean", properties: ["Light", "Fusion", "Transfixion"] },
-      { name: "Gandiva Strike",     level: "Prime",    properties: ["Light", "Fusion", "Transfixion"] },
+      { name: "Flaming Arrow",    level: 5,         properties: ["Liquefaction", "Transfixion"] },
+      { name: "Piercing Arrow",   level: 40,        properties: ["Reverberation", "Transfixion"] },
+      { name: "Dulling Arrow",    level: 60,        properties: ["Liquefaction", "Transfixion"] },
+      { name: "Sidewinder",       level: 175,       properties: ["Reverberation", "Detonation", "Transfixion"] },
+      { name: "Blast Arrow",      level: 200,       properties: ["Induration", "Transfixion"] },
+      { name: "Arching Arrow",    level: 225,       properties: ["Fusion"] },
+      { name: "Empyreal Arrow",   level: "Quest",   properties: ["Fusion", "Transfixion"] },
+      { name: "Refulgent Arrow",  level: 290,       properties: ["Reverberation", "Transfixion"] },
+      { name: "Apex Arrow",       level: "Aeonic",  properties: ["Light", "Fragmentation", "Transfixion"] },
+      { name: "Namas Arrow",      level: "Relic",   properties: ["Fusion", "Transfixion"] },
+      { name: "Jishnu's Radiance",level: "Empyrean",properties: ["Light", "Fusion", "Transfixion"] },
+      { name: "Sarv",             level: "Prime",   properties: ["Transfixion", "Scission", "Gravitation"] },
     ],
   },
   {
     name: "Marksmanship",
     skills: [
-      { name: "Hot Shot",       level: 30,        properties: ["Liquefaction", "Transfixion"] },
-      { name: "Split Shot",     level: 60,        properties: ["Reverberation", "Transfixion"] },
-      { name: "Sniper Shot",    level: 100,       properties: ["Liquefaction", "Transfixion"] },
-      { name: "Slug Shot",      level: 175,       properties: ["Reverberation", "Transfixion", "Detonation"] },
-      { name: "Blast Shot",     level: 200,       properties: ["Induration", "Transfixion"] },
-      { name: "Heavy Shot",     level: 225,       properties: ["Fusion"] },
-      { name: "Detonator",      level: "Quest",   properties: ["Fusion", "Transfixion"] },
-      { name: "Numbing Shot",   level: "Quest",   properties: ["Induration", "Detonation", "Impaction"] },
-      { name: "Last Stand",       level: "Aeonic",  properties: ["Light", "Fusion", "Reverberation"] },
-      { name: "Coronach",         level: "Relic",    properties: ["Darkness", "Distortion", "Reverberation"] },
-      { name: "Leaden Salute",    level: "Mythic",   properties: ["Darkness", "Gravitation", "Compression"] },
-      { name: "Wildfire",         level: "Empyrean", properties: ["Darkness", "Gravitation", "Fusion"] },
-      { name: "Fomalhaut Strike", level: "Prime",    properties: ["Darkness", "Distortion", "Reverberation"] },
+      { name: "Hot Shot",      level: 5,         properties: ["Liquefaction", "Transfixion"] },
+      { name: "Split Shot",    level: 40,        properties: ["Reverberation", "Transfixion"] },
+      { name: "Sniper Shot",   level: 70,        properties: ["Reverberation", "Impaction"] },
+      { name: "Slug Shot",     level: 175,       properties: ["Reverberation", "Transfixion", "Detonation"] },
+      { name: "Blast Shot",    level: 200,       properties: ["Induration", "Transfixion"] },
+      { name: "Heavy Shot",    level: 225,       properties: ["Fusion"] },
+      { name: "Detonator",     level: "Quest",   properties: ["Fusion", "Transfixion"] },
+      { name: "Numbing Shot",  level: 290,       properties: ["Induration", "Detonation", "Impaction"] },
+      { name: "Last Stand",    level: "Aeonic",  properties: ["Light", "Fusion", "Reverberation"] },
+      { name: "Coronach",      level: "Relic",   properties: ["Darkness", "Distortion", "Reverberation"] },
+      { name: "Wildfire",      level: "Empyrean",properties: ["Darkness", "Gravitation", "Fusion"] },
+      { name: "Trueflight",    level: "Mythic",  properties: ["Light", "Fusion"] },
+      { name: "Leaden Salute", level: "Mythic",  properties: ["Darkness", "Gravitation", "Compression"] },
+      { name: "Terminus",      level: "Prime",   properties: ["Induration", "Reverberation", "Fusion"] },
+    ],
+  },
+  {
+    name: "Automaton",
+    skills: [
+      { name: "Slapstick",      level: 0,   properties: ["Reverberation", "Scission"] },
+      { name: "Sling Clipper",  level: 0,   properties: ["Reverberation", "Scission"] },
+      { name: "Chimera Ripper", level: 0,   properties: ["Scission", "Detonation"] },
+      { name: "Knockout",       level: 150, properties: ["Impaction"] },
+      { name: "Cannibal Blade", level: 150, properties: ["Compression", "Detonation"] },
+      { name: "Magic Mortar",   level: 225, properties: ["Reverberation", "Compression"] },
+      { name: "Bone Crusher",   level: 245, properties: ["Impaction", "Fragmentation"] },
+      { name: "String Shredder",level: 324, properties: ["Scission", "Detonation"] },
+      { name: "Arcuballista",   level: 0,   properties: [] },
+      { name: "Daze",           level: 150, properties: [] },
+      { name: "Armor Piercer",  level: 245, properties: ["Detonation", "Scission"] },
+      { name: "Armor Shatterer",level: 324, properties: ["Scission", "Detonation"] },
     ],
   },
   {
@@ -486,7 +526,7 @@ const LEVEL_BG: Record<number, string> = {
   1: "#1F2937", 2: "#1E3A5F", 3: "#3D2C00", 4: "#2D1B4E",
 };
 
-const SPECIAL_TYPES = ["Relic","Mythic","Empyrean","Aeonic","Quest","Prime","BLU","SMN"];
+const SPECIAL_TYPES = ["Relic","Mythic","Empyrean","Aeonic","Quest","Prime","Ergon","BLU","SMN"];
 const ELEMENTS = ["Fire","Wind","Lightning","Light","Earth","Ice","Water","Dark"];
 const ELEMENT_MAP: Record<string, string[]> = {
   Fire: ["Fire"], Wind: ["Aero"], Lightning: ["Thunder"], Light: ["Light","Holy"],
@@ -502,8 +542,9 @@ function getWSForType(weaponType: string): WS[] {
 export default function SkillchainBuilder() {
   const [slots, setSlots] = useState<Slot[]>(Array(6).fill(null).map(() => ({ ...EMPTY_SLOT })));
   const [levelFilters, setLevelFilters] = useState({ 1: true, 2: true, 3: true, 4: false });
+  const [stepFilters, setStepFilters] = useState({ 2: true, 3: true, 4: true, 5: true, 6: true });
   const [specialFilters, setSpecialFilters] = useState({
-    Relic: true, Quest: true, Mythic: true, Empyrean: true, Aeonic: true, Prime: true, BLU: true, SMN: true,
+    Relic: true, Quest: true, Mythic: true, Empyrean: true, Aeonic: true, Prime: true, Ergon: true, BLU: true, SMN: true,
   });
   const [elemFilters, setElemFilters] = useState<Record<string, boolean>>(
     Object.fromEntries(ELEMENTS.map(e => [e, false]))
@@ -514,45 +555,70 @@ export default function SkillchainBuilder() {
   const updateSlot = (idx: number, patch: Partial<Slot>) =>
     setSlots(prev => prev.map((s, i) => i === idx ? { ...s, ...patch } : s));
 
-  // ── Auto-calculate all chains from slot pairs ────────────────────────────
+  // ── Multi-step chain engine (DFS) ───────────────────────────────────────
   const results = useMemo(() => {
-    const grouped = new Map<string, { chain: SCResult; pairs: { oName: string; cName: string; oType: string; cType: string; oLv: any; cLv: any }[] }>();
+    const activeSlots = slots.filter(s => s.weaponType);
+    if (activeSlots.length < 2) return [];
 
-    for (let i = 0; i < slots.length - 1; i++) {
-      const slotA = slots[i];
-      const slotB = slots[i + 1];
-      if (!slotA.weaponType || !slotB.weaponType) continue;
+    // Build filtered WS list per active slot
+    const slotOptions = activeSlots.map(slot => {
+      const wsList = slot.weaponSkill
+        ? getWSForType(slot.weaponType).filter(ws => ws.name === slot.weaponSkill && ws.properties.length > 0)
+        : getWSForType(slot.weaponType);
+      return wsList
+        .filter(ws => {
+          const lv = String(ws.level);
+          return !SPECIAL_TYPES.includes(lv) || specialFilters[lv as keyof typeof specialFilters];
+        })
+        .map(ws => ({ ...ws, wType: slot.weaponType }));
+    });
 
-      const openers = slotA.weaponSkill
-        ? getWSForType(slotA.weaponType).filter(ws => ws.name === slotA.weaponSkill)
-        : getWSForType(slotA.weaponType);
-      const closers = slotB.weaponSkill
-        ? getWSForType(slotB.weaponType).filter(ws => ws.name === slotB.weaponSkill)
-        : getWSForType(slotB.weaponType);
+    const grouped = new Map<string, { chain: SCResult; paths: { names: string[]; types: string[]; steps: number }[] }>();
+    const MAX = 600;
+    let totalFound = 0;
 
-      for (const opener of openers) {
-        const opLv = String(opener.level);
-        if (SPECIAL_TYPES.includes(opLv) && !specialFilters[opLv as keyof typeof specialFilters]) continue;
-        for (const closer of closers) {
-          const clLv = String(closer.level);
-          if (SPECIAL_TYPES.includes(clLv) && !specialFilters[clLv as keyof typeof specialFilters]) continue;
-          const chain = getBestChain(opener.properties as SCProp[], closer.properties as SCProp[]);
-          if (!chain) continue;
-          if (!levelFilters[chain.level as keyof typeof levelFilters]) continue;
+    // Run DFS for each enabled step count
+    for (let numSteps = 2; numSteps <= activeSlots.length; numSteps++) {
+      if (!stepFilters[numSteps as keyof typeof stepFilters]) continue;
+      const window = slotOptions.slice(0, numSteps);
+
+      const stack: { idx: number; names: string[]; types: string[]; props: SCProp[]; lastChain: SCResult | null }[] = [];
+
+      // Seed stack with all WS from first slot
+      for (const ws of window[0]) {
+        stack.push({ idx: 1, names: [ws.name], types: [ws.wType], props: ws.properties as SCProp[], lastChain: null });
+      }
+
+      while (stack.length > 0 && totalFound < MAX) {
+        const { idx, names, types, props, lastChain } = stack.pop()!;
+
+        if (idx === numSteps) {
+          // Complete sequence — record if valid chain exists
+          if (!lastChain) continue;
+          if (!levelFilters[lastChain.level as keyof typeof levelFilters]) continue;
           const anyElem = Object.values(elemFilters).some(v => v);
           if (anyElem) {
             const mapped = ELEMENTS.filter(e => elemFilters[e]).flatMap(e => ELEMENT_MAP[e]);
-            if (!chain.burstElements.some(be => mapped.includes(be))) continue;
+            if (!lastChain.burstElements.some(be => mapped.includes(be))) continue;
           }
-          const key = `${chain.name}-${chain.level}`;
-          if (!grouped.has(key)) grouped.set(key, { chain, pairs: [] });
-          grouped.get(key)!.pairs.push({ oName: opener.name, cName: closer.name, oType: slotA.weaponType, cType: slotB.weaponType, oLv: opener.level, cLv: closer.level });
+          const key = `${lastChain.name}-${lastChain.level}`;
+          if (!grouped.has(key)) grouped.set(key, { chain: lastChain, paths: [] });
+          grouped.get(key)!.paths.push({ names, types, steps: numSteps });
+          totalFound++;
+          continue;
+        }
+
+        // Extend path — try each WS in next slot
+        for (const ws of window[idx]) {
+          const chain = getBestChain(props, ws.properties as SCProp[]);
+          if (!chain) continue;
+          stack.push({ idx: idx + 1, names: [...names, ws.name], types: [...types, ws.wType], props: chain.properties as SCProp[], lastChain: chain });
         }
       }
     }
 
     return Array.from(grouped.values()).sort((a, b) => b.chain.level - a.chain.level);
-  }, [slots, levelFilters, specialFilters, elemFilters]);
+  }, [slots, levelFilters, stepFilters, specialFilters, elemFilters]);
 
   const Toggle = ({ active, onPress, label, color }: { active: boolean; onPress: () => void; label: string; color?: string }) => (
     <TouchableOpacity style={[S.toggle, active && S.toggleOn]} onPress={onPress} activeOpacity={0.7}>
@@ -601,10 +667,19 @@ export default function SkillchainBuilder() {
           onPress={() => setLevelFilters(f => ({ ...f, 4: !f[4] }))} />
       </View>
 
+      {/* ── Skillchain Steps ── */}
+      <Text style={S.sectionLabel}>Skillchain Steps</Text>
+      <View style={S.row}>
+        {([2, 3, 4, 5, 6] as const).map(n => (
+          <Toggle key={n} active={stepFilters[n]} label={`${n} Steps`}
+            onPress={() => setStepFilters(f => ({ ...f, [n]: !f[n] }))} />
+        ))}
+      </View>
+
       {/* ── Special WS ── */}
       <Text style={S.sectionLabel}>Special Weapon Skills</Text>
       <View style={S.row}>
-        {(['Relic','Quest','Mythic','Empyrean','Aeonic','Prime'] as const).map(k => (
+        {(['Relic','Quest','Mythic','Empyrean','Aeonic','Prime','Ergon','BLU','SMN'] as const).map(k => (
           <Toggle key={k} active={specialFilters[k]} label={k}
             onPress={() => setSpecialFilters(f => ({ ...f, [k]: !f[k] }))} />
         ))}
@@ -633,27 +708,42 @@ export default function SkillchainBuilder() {
           <Text style={S.emptyText}>No skillchains with current slots + filters.</Text>
         </View>
       ) : (
-        results.map(({ chain, pairs }) => (
-          <View key={`${chain.name}-${chain.level}`} style={[S.chainGroup, { borderLeftColor: LEVEL_COLORS[chain.level] }]}>
-            <View style={S.chainGroupHeader}>
-              <Text style={[S.chainName, { color: LEVEL_COLORS[chain.level] }]}>{chain.name}</Text>
-              <View style={[S.lvBadge, { backgroundColor: LEVEL_BG[chain.level] }]}>
-                <Text style={[S.lvText, { color: LEVEL_COLORS[chain.level] }]}>Lv {chain.level}</Text>
+        results.map(({ chain, paths }) => {
+          const SHOW = 8;
+          const shown = paths.slice(0, SHOW);
+          const extra = paths.length - SHOW;
+          return (
+            <View key={`${chain.name}-${chain.level}`} style={[S.chainGroup, { borderLeftColor: LEVEL_COLORS[chain.level] }]}>
+              <View style={S.chainGroupHeader}>
+                <Text style={[S.chainName, { color: LEVEL_COLORS[chain.level] }]}>{chain.name}</Text>
+                <View style={[S.lvBadge, { backgroundColor: LEVEL_BG[chain.level] }]}>
+                  <Text style={[S.lvText, { color: LEVEL_COLORS[chain.level] }]}>Lv {chain.level}</Text>
+                </View>
               </View>
+              <Text style={S.burstLine}>Burst: {chain.burstElements.join(', ')}</Text>
+              {shown.map((p, i) => {
+                // Build "WS1 (Type1) → WS2 (Type2) → ..."
+                const seqParts = p.names.map((name, ni) => `${name} (${p.types[ni]})`);
+                return (
+                  <View key={i} style={S.pairRow}>
+                    <Text style={S.seqText}>
+                      {seqParts.map((part, pi) => (
+                        <Text key={pi}>
+                          <Text style={S.pairWS}>{part}</Text>
+                          {pi < seqParts.length - 1 && <Text style={S.pairArrow}> → </Text>}
+                        </Text>
+                      ))}
+                    </Text>
+                    <Text style={S.pairSub}>{p.steps}-step chain</Text>
+                  </View>
+                );
+              })}
+              {extra > 0 && (
+                <Text style={S.moreText}>…and {extra} more sequence{extra > 1 ? 's' : ''}</Text>
+              )}
             </View>
-            <Text style={S.burstLine}>Burst: {chain.burstElements.join(', ')}</Text>
-            {pairs.map((p, i) => (
-              <View key={i} style={S.pairRow}>
-                <Text style={S.pairText}>
-                  <Text style={S.pairWS}>{p.oName}</Text>
-                  <Text style={S.pairArrow}> → </Text>
-                  <Text style={S.pairWS}>{p.cName}</Text>
-                </Text>
-                <Text style={S.pairSub}>{p.oType !== p.cType ? `${p.oType} / ${p.cType}` : p.oType}</Text>
-              </View>
-            ))}
-          </View>
-        ))
+          );
+        })
       )}
 
       <View style={{ height: 40 }} />
@@ -753,10 +843,11 @@ const S = StyleSheet.create({
   lvText:          { fontSize: 12, fontWeight: '700' },
   burstLine:       { color: '#6B7280', fontSize: 11, marginBottom: 8, fontStyle: 'italic' },
   pairRow:         { paddingVertical: 5, borderTopWidth: 1, borderTopColor: '#374151' },
-  pairText:        { fontSize: 13 },
+  seqText:         { fontSize: 13, flexWrap: 'wrap' },
   pairWS:          { color: '#E5E7EB', fontWeight: '600' },
   pairArrow:       { color: '#6B7280' },
   pairSub:         { color: '#4B5563', fontSize: 11, marginTop: 1 },
+  moreText:        { color: '#6B7280', fontSize: 11, fontStyle: 'italic', marginTop: 6, paddingTop: 6, borderTopWidth: 1, borderTopColor: '#374151' },
 
   // Modal
   overlay:         { flex: 1, backgroundColor: 'rgba(0,0,0,0.75)', justifyContent: 'flex-end' },
