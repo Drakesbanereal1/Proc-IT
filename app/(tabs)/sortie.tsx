@@ -421,13 +421,48 @@ export default function Sortie() {
       {/* Bosses tab */}
       {tab === 'bosses' && (
         <View>
-          <Text style={styles.description}>
-            Tap each boss to expand buffs, mechanics, and strategy.
-          </Text>
-          {sortieBosses.map(b => <BossCard key={b.id} boss={b} />)}
 
-          {/* ── Gallimaufry Tables ── */}
-          <Text style={styles.galliTitle}>Minor NM Gallimaufry</Text>
+          {/* ── Major Boss Gallimaufry ── */}
+          <Text style={styles.galliTitle}>Major Boss Gallimaufry</Text>
+          <Text style={styles.description}>Tap each boss to expand buffs, mechanics, and strategy.</Text>
+          {sortieBosses.map(b => <BossCard key={b.id} boss={b} />)}
+          <View style={styles.galliTable}>
+            <View style={styles.galliHeaderRow}>
+              <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
+              <Text style={[styles.galliHeader, { flex: 3 }]}>NM</Text>
+              <Text style={[styles.galliHeader, { flex: 2, textAlign: 'right' }]}>Gallimaufry</Text>
+            </View>
+            {[
+              { sector: 'A', nm: 'Ghatjot',   galli: '2000'  },
+              { sector: 'B', nm: 'Leshonn',   galli: ''      },
+              { sector: 'C', nm: 'Skomora',   galli: ''      },
+              { sector: 'D', nm: 'Degei',     galli: ''      },
+              { sector: 'E', nm: 'Dhartok',   galli: '10000' },
+              { sector: 'F', nm: 'Gartell',   galli: ''      },
+              { sector: 'G', nm: 'Triboulex', galli: ''      },
+              { sector: 'H', nm: 'Aita',      galli: ''      },
+            ].map((r, i) => (
+              <View key={i} style={[styles.galliRow, i % 2 === 1 && styles.galliRowAlt]}>
+                <Text style={[styles.galliCell, { flex: 1, fontWeight: '700', color: C.yellow }]}>{r.sector}</Text>
+                <Text style={[styles.galliCell, { flex: 3, color: '#A78BFA' }]}>{r.nm}</Text>
+                <Text style={[styles.galliCell, { flex: 2, textAlign: 'right' }]}>{r.galli}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* ── Minor Boss Gallimaufry ── */}
+          <Text style={[styles.galliTitle, { marginTop: 28 }]}>Minor Boss Gallimaufry</Text>
+          <Text style={styles.description}>Tap each boss to expand strategy.</Text>
+          {[
+            { id: 'obdella',     name: 'Abject Obdella',      sector: 'Sector A', image: require('../../assets/images/Abject Obdella.png'),      strategy: ['Weak to Thunder', 'Keep party spread — Corrosive Ooze is AoE', 'Magic bursts for max damage', 'Dispellable buffs'] },
+            { id: 'porxie',      name: 'Biune Porxie',         sector: 'Sector B', image: require('../../assets/images/Biune Porxie.png'),         strategy: ['Weak to Ice', 'Uses charm and TP moves frequently', 'Keep shadows up', 'Ice-based damage recommended'] },
+            { id: 'bhoot',       name: 'Cachaemic Bhoot',      sector: 'Sector C', image: require('../../assets/images/Cachaemic Bhoot.png'),      strategy: ['Weak to Fire', 'Undead NM — uses strong drain attacks', 'Fire damage is most effective', 'Must spawn within 5 min of Coffer #C objective'] },
+            { id: 'deleterious', name: 'Demisang Deleterious', sector: 'Sector D', image: require('../../assets/images/Demisang Deleterious.png'), strategy: ['Demon type NM', 'Uses powerful magical attacks', 'Spawn after killing 3 more Demisang', 'Maintain shadows'] },
+            { id: 'botulus',     name: 'Esurient Botulus',     sector: 'Sector E', image: require('../../assets/images/Esurient Botulus.png'),     strategy: ['Weak to Wind', 'Deal majority of damage from behind for Chest #E', 'Keep HP high to survive drain moves', '6 mini-Naakuals spawn 5 min after entry'] },
+            { id: 'ixion',       name: 'Fetid Ixion',          sector: 'Sector F', image: require('../../assets/images/Fetid Ixion.png'),          strategy: ['Weak to Dark', 'Break the horn before killing for Chest #F', 'Thornsong reflects damage — watch timing', 'Dark magic and physical damage recommended'] },
+            { id: 'naraka',      name: 'Gyvewrapped Naraka',   sector: 'Sector G', image: require('../../assets/images/Gyvewrapped Naraka.png'),   strategy: ['Uses binding attacks', 'Kill 19 Gyvewrapped Dullahan for Casket #G2', 'Stand near Bitzer 30s for Casket #G1', '6 mini-Naakuals must be killed in correct order'] },
+            { id: 'tulittia',    name: 'Haughty Tulittia',     sector: 'Sector H', image: require('../../assets/images/Haughty Tulittia.png'),     strategy: ['Plant-type NM', 'Majority indirect damage required for Chest #H', 'Kill all Haughty Paladin for Casket #H2', 'Fire damage effective'] },
+          ].map(b => <BossCard key={b.id} boss={b} />)}
           <View style={styles.galliTable}>
             <View style={styles.galliHeaderRow}>
               <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
@@ -452,30 +487,6 @@ export default function Sortie() {
             ))}
           </View>
 
-          <Text style={styles.galliTitle}>Major NM Gallimaufry</Text>
-          <View style={styles.galliTable}>
-            <View style={styles.galliHeaderRow}>
-              <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
-              <Text style={[styles.galliHeader, { flex: 3 }]}>NM</Text>
-              <Text style={[styles.galliHeader, { flex: 2, textAlign: 'right' }]}>Gallimaufry</Text>
-            </View>
-            {[
-              { sector: 'A', nm: 'Ghatjot',   galli: '2000'  },
-              { sector: 'B', nm: 'Leshonn',   galli: ''      },
-              { sector: 'C', nm: 'Skomora',   galli: ''      },
-              { sector: 'D', nm: 'Degei',     galli: ''      },
-              { sector: 'E', nm: 'Dhartok',   galli: '10000' },
-              { sector: 'F', nm: 'Gartell',   galli: ''      },
-              { sector: 'G', nm: 'Triboulex', galli: ''      },
-              { sector: 'H', nm: 'Aita',      galli: ''      },
-            ].map((r, i) => (
-              <View key={i} style={[styles.galliRow, i % 2 === 1 && styles.galliRowAlt]}>
-                <Text style={[styles.galliCell, { flex: 1, fontWeight: '700', color: C.yellow }]}>{r.sector}</Text>
-                <Text style={[styles.galliCell, { flex: 3, color: '#A78BFA' }]}>{r.nm}</Text>
-                <Text style={[styles.galliCell, { flex: 2, textAlign: 'right' }]}>{r.galli}</Text>
-              </View>
-            ))}
-          </View>
         </View>
       )}
 
