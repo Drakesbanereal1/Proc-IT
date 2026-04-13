@@ -124,39 +124,6 @@ const sortieSectors: SortieSector[] = [
 
 const sortieBosses: BossData[] = [
   {
-    id: "degei", name: "Degei", sector: "Zone D",
-    image: require("../../assets/images/Degei.png"),
-    targetTime: "≤4 minutes",
-    buffs: [
-      "BRD: HM, Min5, Min4, Mad, Aria",
-      "RDM: Haste, Phalanx, Dia, Distract",
-      "GEO: Indi-Fury, Geo-Frailty (optional BoG)",
-      "COR: Crooked Chaos, Sam",
-    ],
-    strategy: [
-      "Handle elemental procs efficiently",
-      "Keep rolls active",
-      "Defeat cleanly before adds spawn",
-    ],
-  },
-  {
-    id: "aita", name: "Aita", sector: "Zone H",
-    image: require("../../assets/images/Aita.png"),
-    targetTime: "≤6 minutes",
-    buffs: [
-      "BRD: HM, Min5, Min4, Mad, Aria",
-      "RDM: Haste, Phalanx, Gravity, Refresh",
-      "GEO: Indi-Gravity, BoG Geo-Frailty, Entrust Haste or Fury",
-      "COR: Crooked Chaos, Sam",
-    ],
-    strategy: [
-      "RDM: Stymie + Spontaneity → Gravity II",
-      "PLD: Stay 20–25y away to avoid TP cleaves",
-      "GEO: Handle !! procs when needed",
-      "DNC: Super Jump after two WS to shed hate",
-    ],
-  },
-  {
     id: "ghatjot", name: "Ghatjot", sector: "Zone A",
     image: require("../../assets/images/Ghatjot.png"),
     targetTime: "≤5 minutes",
@@ -204,21 +171,35 @@ const sortieBosses: BossData[] = [
     ],
   },
   {
-    id: "triboulex", name: "Triboulex", sector: "Basement G",
-    image: require("../../assets/images/Triboulex.png"),
-    targetTime: "≤6 minutes",
+    id: "degei", name: "Degei", sector: "Zone D",
+    image: require("../../assets/images/Degei.png"),
+    targetTime: "≤4 minutes",
+    buffs: [
+      "BRD: HM, Min5, Min4, Mad, Aria",
+      "RDM: Haste, Phalanx, Dia, Distract",
+      "GEO: Indi-Fury, Geo-Frailty (optional BoG)",
+      "COR: Crooked Chaos, Sam",
+    ],
+    strategy: [
+      "Handle elemental procs efficiently",
+      "Keep rolls active",
+      "Defeat cleanly before adds spawn",
+    ],
+  },
+  {
+    id: "dhartok", name: "Dhartok", sector: "Basement E",
+    image: require("../../assets/images/Dhartok.png"),
+    targetTime: "≤5 minutes",
     buffs: [
       "BRD: HM, Min5, Min4, Mad, Aria",
       "RDM: Haste, Phalanx, Distract",
-      "GEO: Indi-Fury, Geo-Frailty",
+      "GEO: Indi-Fury, Geo-Frailty (optional BoG)",
       "COR: Crooked Chaos, Sam",
-      "PLD: Holy Circle, Enlight, Crusade",
     ],
     strategy: [
-      "PLD: Face-tank north side; DDs attack south at 5y",
-      "Avoid unnecessary burst to prevent double AoEs",
+      "PLD: Kite and ignore ranged spit damage",
+      "Skip TP procs under 25% HP and finish cleanly",
     ],
-    tips: ["One member locate exit before entering boss"],
   },
   {
     id: "gartell", name: "Gartell", sector: "Basement F",
@@ -240,18 +221,37 @@ const sortieBosses: BossData[] = [
     tips: ["One member locate exit before entering boss"],
   },
   {
-    id: "dhartok", name: "Dhartok", sector: "Basement E",
-    image: require("../../assets/images/Dhartok.png"),
-    targetTime: "≤5 minutes",
+    id: "triboulex", name: "Triboulex", sector: "Basement G",
+    image: require("../../assets/images/Triboulex.png"),
+    targetTime: "≤6 minutes",
     buffs: [
       "BRD: HM, Min5, Min4, Mad, Aria",
       "RDM: Haste, Phalanx, Distract",
-      "GEO: Indi-Fury, Geo-Frailty (optional BoG)",
+      "GEO: Indi-Fury, Geo-Frailty",
+      "COR: Crooked Chaos, Sam",
+      "PLD: Holy Circle, Enlight, Crusade",
+    ],
+    strategy: [
+      "PLD: Face-tank north side; DDs attack south at 5y",
+      "Avoid unnecessary burst to prevent double AoEs",
+    ],
+    tips: ["One member locate exit before entering boss"],
+  },
+  {
+    id: "aita", name: "Aita", sector: "Zone H",
+    image: require("../../assets/images/Aita.png"),
+    targetTime: "≤6 minutes",
+    buffs: [
+      "BRD: HM, Min5, Min4, Mad, Aria",
+      "RDM: Haste, Phalanx, Gravity, Refresh",
+      "GEO: Indi-Gravity, BoG Geo-Frailty, Entrust Haste or Fury",
       "COR: Crooked Chaos, Sam",
     ],
     strategy: [
-      "PLD: Kite and ignore ranged spit damage",
-      "Skip TP procs under 25% HP and finish cleanly",
+      "RDM: Stymie + Spontaneity → Gravity II",
+      "PLD: Stay 20–25y away to avoid TP cleaves",
+      "GEO: Handle !! procs when needed",
+      "DNC: Super Jump after two WS to shed hate",
     ],
   },
   {
