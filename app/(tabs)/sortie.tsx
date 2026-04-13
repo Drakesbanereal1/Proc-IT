@@ -425,6 +425,57 @@ export default function Sortie() {
             Tap each boss to expand buffs, mechanics, and strategy.
           </Text>
           {sortieBosses.map(b => <BossCard key={b.id} boss={b} />)}
+
+          {/* ── Gallimaufry Tables ── */}
+          <Text style={styles.galliTitle}>Minor NM Gallimaufry</Text>
+          <View style={styles.galliTable}>
+            <View style={styles.galliHeaderRow}>
+              <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
+              <Text style={[styles.galliHeader, { flex: 3 }]}>NM</Text>
+              <Text style={[styles.galliHeader, { flex: 2, textAlign: 'right' }]}>Gallimaufry</Text>
+            </View>
+            {[
+              { sector: 'A', nm: 'Abject Obdella',      galli: '195' },
+              { sector: 'B', nm: 'Biune Porxie',         galli: '255' },
+              { sector: 'C', nm: 'Cachaemic Bhoot',      galli: '315' },
+              { sector: 'D', nm: 'Demisang Deleterious', galli: '375' },
+              { sector: 'E', nm: 'Esurient Botulus',     galli: '435' },
+              { sector: 'F', nm: 'Fetid Ixion',          galli: '450' },
+              { sector: 'G', nm: 'Gyvewrapped Naraka',   galli: '465' },
+              { sector: 'H', nm: 'Haughty Tulittia',     galli: '480' },
+            ].map((r, i) => (
+              <View key={i} style={[styles.galliRow, i % 2 === 1 && styles.galliRowAlt]}>
+                <Text style={[styles.galliCell, { flex: 1, fontWeight: '700', color: C.yellow }]}>{r.sector}</Text>
+                <Text style={[styles.galliCell, { flex: 3, color: '#A78BFA' }]}>{r.nm}</Text>
+                <Text style={[styles.galliCell, { flex: 2, textAlign: 'right' }]}>{r.galli}</Text>
+              </View>
+            ))}
+          </View>
+
+          <Text style={styles.galliTitle}>Major NM Gallimaufry</Text>
+          <View style={styles.galliTable}>
+            <View style={styles.galliHeaderRow}>
+              <Text style={[styles.galliHeader, { flex: 1 }]}>Sector</Text>
+              <Text style={[styles.galliHeader, { flex: 3 }]}>NM</Text>
+              <Text style={[styles.galliHeader, { flex: 2, textAlign: 'right' }]}>Gallimaufry</Text>
+            </View>
+            {[
+              { sector: 'A', nm: 'Ghatjot',   galli: '2000' },
+              { sector: 'B', nm: 'Leshonn',   galli: '2000' },
+              { sector: 'C', nm: 'Skomora',   galli: '2000' },
+              { sector: 'D', nm: 'Degei',     galli: '2000' },
+              { sector: 'E', nm: 'Dhartok',   galli: '10000' },
+              { sector: 'F', nm: 'Gartell',   galli: '10000' },
+              { sector: 'G', nm: 'Triboulex', galli: '10000' },
+              { sector: 'H', nm: 'Aita',      galli: '10000' },
+            ].map((r, i) => (
+              <View key={i} style={[styles.galliRow, i % 2 === 1 && styles.galliRowAlt]}>
+                <Text style={[styles.galliCell, { flex: 1, fontWeight: '700', color: C.yellow }]}>{r.sector}</Text>
+                <Text style={[styles.galliCell, { flex: 3, color: '#A78BFA' }]}>{r.nm}</Text>
+                <Text style={[styles.galliCell, { flex: 2, textAlign: 'right' }]}>{r.galli}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       )}
 
@@ -488,4 +539,13 @@ const styles = StyleSheet.create({
   bossSection:    { gap: 4 },
   bossSectionTitle: { color: C.blue, fontWeight: '700', fontSize: 14, marginBottom: 2 },
   bullet:         { color: C.text, fontSize: 13, lineHeight: 20 },
+
+  // Gallimaufry tables
+  galliTitle:     { fontSize: 16, fontWeight: '700', color: '#C084FC', marginTop: 20, marginBottom: 8, borderBottomWidth: 1, borderBottomColor: '#3D2A5A', paddingBottom: 4 },
+  galliTable:     { backgroundColor: C.surface, borderRadius: 8, overflow: 'hidden', borderWidth: 1, borderColor: '#3D2A5A', marginBottom: 16 },
+  galliHeaderRow: { flexDirection: 'row', backgroundColor: '#2D1B4E', padding: 10 },
+  galliHeader:    { color: '#E9D5FF', fontWeight: '700', fontSize: 12 },
+  galliRow:       { flexDirection: 'row', padding: 10 },
+  galliRowAlt:    { backgroundColor: '#1A1030' },
+  galliCell:      { color: C.text, fontSize: 13 },
 });
