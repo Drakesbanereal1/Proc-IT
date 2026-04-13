@@ -1,4 +1,5 @@
-import { ScrollView, Text, View, StyleSheet } from "react-native";
+import { useState } from "react";
+import { ScrollView, Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 // --- DATA STRUCTURES ---
@@ -103,31 +104,41 @@ const sortieBosses: BossStrategy[] = [
   },
 ];
 
+// --- BOSS CARD COMPONENT ---
+function BossCard({ boss }: { boss: BossStrategy }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.bossCard}>
+      <TouchableOpacity style={styles.bossHeader} onPress={() => setOpen(o => !o)} activeOpacity={0.7}>
+        <Text style={styles.bossId}>{boss.id}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.bossName}>{boss.name}</Text>
+          <Text style={styles.bossTitle}>{boss.title}</Text>
+        </View>
+        <Text style={styles.toggleHint}>{open ? 'tap to close' : 'tap to open'}</Text>
+      </TouchableOpacity>
+
+      {open && (
+        <View style={styles.notesSection}>
+          {boss.notes.map((note, i) => (
+            <View key={i} style={styles.noteRow}>
+              <Ionicons name="caret-forward-outline" size={16} color="#f0ad4e" style={styles.noteIcon} />
+              <Text style={styles.noteText}>{note}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
 // --- MAIN COMPONENT ---
 export default function SortieBoss() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <Text style={styles.mainTitle}>Sortie Boss Strategies</Text>
-
       {sortieBosses.map((boss) => (
-        <View key={boss.id} style={styles.bossCard}>
-          <View style={styles.bossHeader}>
-            <Text style={styles.bossId}>{boss.id}</Text>
-            <View>
-              <Text style={styles.bossName}>{boss.name}</Text>
-              <Text style={styles.bossTitle}>{boss.title}</Text>
-            </View>
-          </View>
-
-          <View style={styles.notesSection}>
-            {boss.notes.map((note, i) => (
-              <View key={i} style={styles.noteRow}>
-                <Ionicons name="caret-forward-outline" size={16} color="#f0ad4e" style={styles.noteIcon} />
-                <Text style={styles.noteText}>{note}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
+        <BossCard key={boss.id} boss={boss} />
       ))}
     </ScrollView>
   );
@@ -179,6 +190,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#A0AEC0',
     fontStyle: 'italic',
+  },
+  toggleHint: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontStyle: 'italic',
+    marginLeft: 8,
   },
   notesSection: {
     padding: 15,
