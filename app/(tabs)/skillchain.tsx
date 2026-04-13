@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import {
   ScrollView, Text, View, TouchableOpacity,
-  StyleSheet, Modal, TextInput,
+  StyleSheet, Modal, TextInput, FlatList,
 } from "react-native";
 
 // ─── TYPES ──────────────────────────────────────────────────────────────────
@@ -472,312 +472,242 @@ const WEAPON_TYPES: { name: string; skills: WS[] }[] = [
   },
 ];
 
-// ─── UI CONSTANTS ────────────────────────────────────────────────────────────
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+
+interface Slot { weaponType: string; weaponSkill: string; }
+
+const EMPTY_SLOT: Slot = { weaponType: '', weaponSkill: '' };
 
 const LEVEL_COLORS: Record<number, string> = {
-  1: "#9CA3AF",
-  2: "#60A5FA",
-  3: "#FBBF24",
-  4: "#C084FC",
+  1: "#9CA3AF", 2: "#60A5FA", 3: "#FBBF24", 4: "#C084FC",
 };
 
 const LEVEL_BG: Record<number, string> = {
-  1: "#1F2937",
-  2: "#1E3A5F",
-  3: "#3D2C00",
-  4: "#2D1B4E",
+  1: "#1F2937", 2: "#1E3A5F", 3: "#3D2C00", 4: "#2D1B4E",
 };
 
-const STAGE_DESCRIPTIONS: Record<number, string> = {
-  1: "Same-property pairs · single element burst",
-  2: "Fusion · Gravitation · Fragmentation · Distortion",
-  3: "Light · Darkness · multi-element burst",
-  4: "Radiance · Umbra · requires Aeonic aftermath",
+const SPECIAL_TYPES = ["Relic","Mythic","Empyrean","Aeonic","Quest","Prime","BLU","SMN"];
+const ELEMENTS = ["Fire","Wind","Lightning","Light","Earth","Ice","Water","Dark"];
+const ELEMENT_MAP: Record<string, string[]> = {
+  Fire: ["Fire"], Wind: ["Aero"], Lightning: ["Thunder"], Light: ["Light","Holy"],
+  Earth: ["Stone"], Ice: ["Blizzard"], Water: ["Water"], Dark: ["Dark","Drain"],
 };
 
-// Props that can OPEN a chain toward each stage level
-const STAGE_OPENER_PROPS: Record<number, SCProp[]> = {
-  1: ["Transfixion","Compression","Liquefaction","Scission","Reverberation","Detonation","Induration","Impaction"],
-  2: ["Impaction","Compression","Reverberation","Scission"],
-  3: ["Gravitation","Distortion","Fusion","Fragmentation"],
-  4: ["Light","Darkness"],
-};
-
-// ─── FLAT WS LIST ────────────────────────────────────────────────────────────
-
-interface FlatWS {
-  name: string;
-  weaponType: string;
-  level: number | string;
-  properties: SCProp[];
-}
-
-const ALL_WEAPON_SKILLS: FlatWS[] = WEAPON_TYPES.flatMap(wt =>
-  wt.skills
-    .filter(ws => ws.properties.length > 0)
-    .map(ws => ({ name: ws.name, weaponType: wt.name, level: ws.level, properties: ws.properties }))
-);
-
-function getValidOpeners(stage: number): FlatWS[] {
-  const targets = STAGE_OPENER_PROPS[stage] as SCProp[];
-  return ALL_WEAPON_SKILLS.filter(ws => ws.properties.some(p => targets.includes(p)));
-}
-
-function getValidClosers(openerProps: SCProp[]): FlatWS[] {
-  return ALL_WEAPON_SKILLS.filter(ws => getBestChain(openerProps, ws.properties) !== null);
+function getWSForType(weaponType: string): WS[] {
+  return WEAPON_TYPES.find(wt => wt.name === weaponType)?.skills.filter(ws => ws.properties.length > 0) ?? [];
 }
 
 // ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
 
 export default function SkillchainBuilder() {
-  const [stageGoal, setStageGoal] = useState<1 | 2 | 3 | 4 | null>(null);
-  const [steps, setSteps] = useState<FlatWS[]>([]);
-  const [pickerVisible, setPickerVisible] = useState(false);
-  const [search, setSearch] = useState("");
+  const [slots, setSlots] = useState<Slot[]>(Array(6).fill(null).map(() => ({ ...EMPTY_SLOT })));
+  const [levelFilters, setLevelFilters] = useState({ 1: true, 2: true, 3: true, 4: false });
+  const [specialFilters, setSpecialFilters] = useState({
+    Relic: true, Quest: true, Mythic: true, Empyrean: true, Aeonic: true, Prime: true, BLU: true, SMN: true,
+  });
+  const [elemFilters, setElemFilters] = useState<Record<string, boolean>>(
+    Object.fromEntries(ELEMENTS.map(e => [e, false]))
+  );
+  const [modal, setModal] = useState<{ slotIdx: number; mode: 'type' | 'ws' } | null>(null);
+  const [search, setSearch] = useState('');
 
-  // Chains between consecutive steps
-  const chains = useMemo(() => {
-    const result: (SCResult | null)[] = [];
-    if (steps.length < 2) return result;
-    let openerProps: SCProp[] = steps[0].properties;
-    for (let i = 1; i < steps.length; i++) {
-      const chain = getBestChain(openerProps, steps[i].properties);
-      result.push(chain);
-      openerProps = chain ? chain.properties : steps[i].properties;
+  const updateSlot = (idx: number, patch: Partial<Slot>) =>
+    setSlots(prev => prev.map((s, i) => i === idx ? { ...s, ...patch } : s));
+
+  // ── Auto-calculate all chains from slot pairs ────────────────────────────
+  const results = useMemo(() => {
+    const grouped = new Map<string, { chain: SCResult; pairs: { oName: string; cName: string; oType: string; cType: string; oLv: any; cLv: any }[] }>();
+
+    for (let i = 0; i < slots.length - 1; i++) {
+      const slotA = slots[i];
+      const slotB = slots[i + 1];
+      if (!slotA.weaponType || !slotB.weaponType) continue;
+
+      const openers = slotA.weaponSkill
+        ? getWSForType(slotA.weaponType).filter(ws => ws.name === slotA.weaponSkill)
+        : getWSForType(slotA.weaponType);
+      const closers = slotB.weaponSkill
+        ? getWSForType(slotB.weaponType).filter(ws => ws.name === slotB.weaponSkill)
+        : getWSForType(slotB.weaponType);
+
+      for (const opener of openers) {
+        const opLv = String(opener.level);
+        if (SPECIAL_TYPES.includes(opLv) && !specialFilters[opLv as keyof typeof specialFilters]) continue;
+        for (const closer of closers) {
+          const clLv = String(closer.level);
+          if (SPECIAL_TYPES.includes(clLv) && !specialFilters[clLv as keyof typeof specialFilters]) continue;
+          const chain = getBestChain(opener.properties as SCProp[], closer.properties as SCProp[]);
+          if (!chain) continue;
+          if (!levelFilters[chain.level as keyof typeof levelFilters]) continue;
+          const anyElem = Object.values(elemFilters).some(v => v);
+          if (anyElem) {
+            const mapped = ELEMENTS.filter(e => elemFilters[e]).flatMap(e => ELEMENT_MAP[e]);
+            if (!chain.burstElements.some(be => mapped.includes(be))) continue;
+          }
+          const key = `${chain.name}-${chain.level}`;
+          if (!grouped.has(key)) grouped.set(key, { chain, pairs: [] });
+          grouped.get(key)!.pairs.push({ oName: opener.name, cName: closer.name, oType: slotA.weaponType, cType: slotB.weaponType, oLv: opener.level, cLv: closer.level });
+        }
+      }
     }
-    return result;
-  }, [steps]);
 
-  const lastChain = chains.length > 0 ? chains[chains.length - 1] : null;
+    return Array.from(grouped.values()).sort((a, b) => b.chain.level - a.chain.level);
+  }, [slots, levelFilters, specialFilters, elemFilters]);
 
-  // Current active props for filtering next step
-  const currentProps = useMemo((): SCProp[] => {
-    if (steps.length === 0) return [];
-    if (chains.length === 0) return steps[0].properties;
-    for (let i = chains.length - 1; i >= 0; i--) {
-      if (chains[i]) return chains[i]!.properties;
-    }
-    return steps[steps.length - 1].properties;
-  }, [steps, chains]);
+  const Toggle = ({ active, onPress, label, color }: { active: boolean; onPress: () => void; label: string; color?: string }) => (
+    <TouchableOpacity style={[S.toggle, active && S.toggleOn]} onPress={onPress} activeOpacity={0.7}>
+      {active && <Text style={S.toggleCheck}>✓ </Text>}
+      <Text style={[S.toggleLabel, active && { color: color ?? '#60A5FA' }]}>{label}</Text>
+    </TouchableOpacity>
+  );
 
-  // Valid WS to show in picker
-  const validWS = useMemo((): FlatWS[] => {
-    if (!stageGoal) return [];
-    return steps.length === 0 ? getValidOpeners(stageGoal) : getValidClosers(currentProps);
-  }, [stageGoal, steps, currentProps]);
+  const activeCount = slots.filter(s => s.weaponType).length;
 
-  const filteredWS = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return validWS;
-    return validWS.filter(
-      ws => ws.name.toLowerCase().includes(q) || ws.weaponType.toLowerCase().includes(q)
-    );
-  }, [validWS, search]);
-
-  const addStep = (ws: FlatWS) => {
-    setSteps(prev => [...prev, ws]);
-    setPickerVisible(false);
-    setSearch("");
-  };
-
-  const removeStep = (i: number) => {
-    setSteps(prev => prev.filter((_, idx) => idx !== i));
-  };
-
-  const reset = () => {
-    setStageGoal(null);
-    setSteps([]);
-    setSearch("");
-  };
-
-  // ── Stage selection screen ──────────────────────────────────────────────────
-  if (!stageGoal) {
-    return (
-      <ScrollView style={styles.container}>
-        <Text style={styles.mainTitle}>Skillchain Builder</Text>
-        <Text style={styles.subtitle}>Choose your target skillchain stage</Text>
-        {([1, 2, 3, 4] as const).map(stage => (
-          <TouchableOpacity
-            key={stage}
-            style={[styles.stageBtn, { borderColor: LEVEL_COLORS[stage] }]}
-            onPress={() => setStageGoal(stage)}
-          >
-            <View style={{ flex: 1 }}>
-              <Text style={styles.stageBtnTitle}>Stage {stage}</Text>
-              <Text style={styles.stageBtnDesc}>{STAGE_DESCRIPTIONS[stage]}</Text>
-            </View>
-            <Text style={[styles.stageLvBadge, { color: LEVEL_COLORS[stage] }]}>Lv {stage}</Text>
-          </TouchableOpacity>
-        ))}
-
-        <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>How Skillchains Work</Text>
-          {([1,2,3,4] as const).map(lv => (
-            <View key={lv} style={styles.infoRow}>
-              <Text style={[styles.infoLevel, { color: LEVEL_COLORS[lv] }]}>Lv {lv}</Text>
-              <Text style={styles.infoText}>{STAGE_DESCRIPTIONS[lv]}</Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    );
-  }
-
-  // ── Builder screen ──────────────────────────────────────────────────────────
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
-      <View style={styles.builderHeader}>
-        <TouchableOpacity onPress={reset} style={styles.backLink}>
-          <Text style={styles.backLinkText}>← Stages</Text>
-        </TouchableOpacity>
-        <View style={[styles.goalBadge, { borderColor: LEVEL_COLORS[stageGoal] }]}>
-          <Text style={[styles.goalBadgeText, { color: LEVEL_COLORS[stageGoal] }]}>
-            Goal: Stage {stageGoal}
-          </Text>
-        </View>
-      </View>
+    <ScrollView style={S.container} contentContainerStyle={S.content}>
+      <Text style={S.title}>Skillchain Builder</Text>
 
-      {/* Steps */}
-      {steps.map((ws, i) => {
-        const chain = i < chains.length ? chains[i] : null;
-        return (
-          <View key={i}>
-            <View style={styles.stepRow}>
-              <View style={styles.stepNum}>
-                <Text style={styles.stepNumText}>{i + 1}</Text>
-              </View>
-              <View style={styles.stepInfo}>
-                <Text style={styles.wsName}>{ws.name}</Text>
-                <Text style={styles.wsWeapon}>{ws.weaponType} · {ws.level}</Text>
-                <Text style={styles.wsProps}>{ws.properties.join(" / ")}</Text>
-              </View>
-              <TouchableOpacity onPress={() => removeStep(i)} style={styles.removeBtn}>
-                <Text style={styles.removeBtnText}>✕</Text>
+      {/* ── 6 Weapon Slots ── */}
+      <Text style={S.sectionLabel}>Weapon Slots  <Text style={S.sectionHint}>(tap slot to set weapon type)</Text></Text>
+      <View style={S.slotsGrid}>
+        {slots.map((slot, i) => (
+          <View key={i} style={[S.slotCard, slot.weaponType && S.slotCardActive]}>
+            <Text style={S.slotNum}>{i + 1}</Text>
+            <TouchableOpacity onPress={() => { setModal({ slotIdx: i, mode: 'type' }); setSearch(''); }} style={{ flex: 1 }}>
+              <Text style={S.slotType} numberOfLines={1}>{slot.weaponType || '—  tap to set'}</Text>
+            </TouchableOpacity>
+            {slot.weaponType && (
+              <TouchableOpacity onPress={() => { setModal({ slotIdx: i, mode: 'ws' }); setSearch(''); }} style={S.slotWSBtn}>
+                <Text style={S.slotWSText} numberOfLines={1}>{slot.weaponSkill || 'Any WS'}</Text>
               </TouchableOpacity>
-            </View>
-
-            {i < steps.length - 1 && (
-              <View style={[
-                styles.chainBadge,
-                { backgroundColor: chain ? LEVEL_BG[chain.level] : "#1A202C" },
-              ]}>
-                {chain ? (
-                  <>
-                    <Text style={[styles.chainName, { color: LEVEL_COLORS[chain.level] }]}>
-                      ↓  {chain.name}  (Level {chain.level})
-                    </Text>
-                    <Text style={styles.chainBurst}>Burst: {chain.burstElements.join(", ")}</Text>
-                  </>
-                ) : (
-                  <Text style={styles.noChain}>↓  No skillchain formed</Text>
-                )}
-              </View>
+            )}
+            {slot.weaponType && (
+              <TouchableOpacity onPress={() => updateSlot(i, EMPTY_SLOT)} style={S.slotX}>
+                <Text style={S.slotXText}>✕</Text>
+              </TouchableOpacity>
             )}
           </View>
-        );
-      })}
-
-      {/* Add step */}
-      {steps.length < 6 && (
-        <TouchableOpacity style={styles.addBtn} onPress={() => setPickerVisible(true)}>
-          <Text style={styles.addBtnText}>+ Add Step {steps.length + 1}</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Final result */}
-      {lastChain && (
-        <View style={[styles.finalCard, { borderColor: LEVEL_COLORS[lastChain.level] }]}>
-          <Text style={styles.finalLabel}>Final Skillchain</Text>
-          <Text style={[styles.finalName, { color: LEVEL_COLORS[lastChain.level] }]}>
-            {lastChain.name} — Level {lastChain.level}
-          </Text>
-          <Text style={styles.finalBurst}>Magic Burst: {lastChain.burstElements.join(", ")}</Text>
-        </View>
-      )}
-
-      {/* Clear */}
-      {steps.length > 0 && (
-        <TouchableOpacity style={styles.clearBtn} onPress={reset}>
-          <Text style={styles.clearBtnText}>Clear &amp; Change Stage</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Nuke wall info */}
-      <View style={styles.infoSection}>
-        <Text style={styles.infoTitle}>Consecutive Elemental Damage Penalty (Nuke Wall)</Text>
-        <Text style={styles.infoBody}>
-          On Notorious Monsters, same-element spells back-to-back trigger a penalty:
-        </Text>
-        <View style={styles.penaltyRow}>
-          <Text style={styles.penaltyNum}>2nd nuke</Text>
-          <Text style={styles.penaltyVal}>−20% damage</Text>
-        </View>
-        <View style={styles.penaltyRow}>
-          <Text style={styles.penaltyNum}>3rd+ nukes</Text>
-          <Text style={styles.penaltyVal}>−40–50% damage</Text>
-        </View>
-        <Text style={styles.infoBody}>
-          Resets after 5 seconds. Magic bursts off a skillchain bypass this penalty entirely.
-        </Text>
+        ))}
       </View>
 
-      {/* Picker Modal */}
-      <Modal visible={pickerVisible} animationType="slide" transparent>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>
-                {steps.length === 0 ? `Stage ${stageGoal} Openers` : "Choose Next Skill"}
+      {/* ── Skillchain Levels ── */}
+      <Text style={S.sectionLabel}>Skillchain Levels</Text>
+      <View style={S.row}>
+        {([1, 2, 3] as const).map(lv => (
+          <Toggle key={lv} active={levelFilters[lv]} color={LEVEL_COLORS[lv]} label={`Level ${lv}`}
+            onPress={() => setLevelFilters(f => ({ ...f, [lv]: !f[lv] }))} />
+        ))}
+        <Toggle active={levelFilters[4]} color={LEVEL_COLORS[4]} label="Aeonic Lv 4"
+          onPress={() => setLevelFilters(f => ({ ...f, 4: !f[4] }))} />
+      </View>
+
+      {/* ── Special WS ── */}
+      <Text style={S.sectionLabel}>Special Weapon Skills</Text>
+      <View style={S.row}>
+        {(['Relic','Quest','Mythic','Empyrean','Aeonic','Prime'] as const).map(k => (
+          <Toggle key={k} active={specialFilters[k]} label={k}
+            onPress={() => setSpecialFilters(f => ({ ...f, [k]: !f[k] }))} />
+        ))}
+      </View>
+
+      {/* ── Monster Weakness ── */}
+      <Text style={S.sectionLabel}>Monster Weakness</Text>
+      <View style={S.row}>
+        {ELEMENTS.map(e => (
+          <Toggle key={e} active={elemFilters[e]} color="#F87171" label={e}
+            onPress={() => setElemFilters(f => ({ ...f, [e]: !f[e] }))} />
+        ))}
+      </View>
+
+      {/* ── Results ── */}
+      <Text style={S.sectionLabel}>
+        Results {results.length > 0 ? `— ${results.length} chain type${results.length > 1 ? 's' : ''}` : ''}
+      </Text>
+
+      {activeCount < 2 ? (
+        <View style={S.emptyBox}>
+          <Text style={S.emptyText}>Set at least 2 consecutive weapon slots to see skillchains.</Text>
+        </View>
+      ) : results.length === 0 ? (
+        <View style={S.emptyBox}>
+          <Text style={S.emptyText}>No skillchains with current slots + filters.</Text>
+        </View>
+      ) : (
+        results.map(({ chain, pairs }) => (
+          <View key={`${chain.name}-${chain.level}`} style={[S.chainGroup, { borderLeftColor: LEVEL_COLORS[chain.level] }]}>
+            <View style={S.chainGroupHeader}>
+              <Text style={[S.chainName, { color: LEVEL_COLORS[chain.level] }]}>{chain.name}</Text>
+              <View style={[S.lvBadge, { backgroundColor: LEVEL_BG[chain.level] }]}>
+                <Text style={[S.lvText, { color: LEVEL_COLORS[chain.level] }]}>Lv {chain.level}</Text>
+              </View>
+            </View>
+            <Text style={S.burstLine}>Burst: {chain.burstElements.join(', ')}</Text>
+            {pairs.map((p, i) => (
+              <View key={i} style={S.pairRow}>
+                <Text style={S.pairText}>
+                  <Text style={S.pairWS}>{p.oName}</Text>
+                  <Text style={S.pairArrow}> → </Text>
+                  <Text style={S.pairWS}>{p.cName}</Text>
+                </Text>
+                <Text style={S.pairSub}>{p.oType !== p.cType ? `${p.oType} / ${p.cType}` : p.oType}</Text>
+              </View>
+            ))}
+          </View>
+        ))
+      )}
+
+      <View style={{ height: 40 }} />
+
+      {/* ── Modal ── */}
+      <Modal visible={!!modal} animationType="slide" transparent onRequestClose={() => setModal(null)}>
+        <View style={S.overlay}>
+          <View style={S.modalBox}>
+            <View style={S.modalHeader}>
+              <Text style={S.modalTitle}>
+                {modal?.mode === 'type'
+                  ? `Slot ${(modal?.slotIdx ?? 0) + 1} — Weapon Type`
+                  : `Slot ${(modal?.slotIdx ?? 0) + 1} — Weapon Skill`}
               </Text>
-              <TouchableOpacity onPress={() => { setPickerVisible(false); setSearch(""); }}>
-                <Text style={styles.modalClose}>✕</Text>
+              <TouchableOpacity onPress={() => { setModal(null); setSearch(''); }}>
+                <Text style={S.modalClose}>✕</Text>
               </TouchableOpacity>
             </View>
-
             <TextInput
-              style={styles.searchInput}
-              placeholder="Search skill or weapon type..."
+              style={S.searchInput}
+              placeholder="Search..."
               placeholderTextColor="#6B7280"
               value={search}
               onChangeText={setSearch}
               autoCorrect={false}
             />
-
-            <ScrollView keyboardShouldPersistTaps="handled">
-              {filteredWS.length === 0 ? (
-                <Text style={styles.emptyMsg}>No matching skills.</Text>
-              ) : (
-                filteredWS.map((ws, i) => {
-                  const chainResult = steps.length > 0
-                    ? getBestChain(currentProps, ws.properties)
-                    : null;
-                  return (
-                    <TouchableOpacity
-                      key={`${ws.name}-${i}`}
-                      style={styles.pickerItem}
-                      onPress={() => addStep(ws)}
-                    >
-                      <View style={{ flex: 1 }}>
-                        <View style={styles.pickerItemRow}>
-                          <Text style={styles.pickerItemText}>{ws.name}</Text>
-                          {chainResult && (
-                            <Text style={[
-                              styles.chainResultBadge,
-                              { color: LEVEL_COLORS[chainResult.level] },
-                            ]}>
-                              → {chainResult.name}
-                            </Text>
-                          )}
-                        </View>
-                        <Text style={styles.pickerItemSub}>
-                          {ws.weaponType} · {ws.level} · {ws.properties.join(" / ")}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })
-              )}
+            <ScrollView keyboardShouldPersistTaps="handled" style={{ maxHeight: 420 }}>
+              {modal?.mode === 'type'
+                ? WEAPON_TYPES
+                    .filter(wt => !search.trim() || wt.name.toLowerCase().includes(search.trim().toLowerCase()))
+                    .map((wt, i) => (
+                      <TouchableOpacity key={i} style={S.modalItem} onPress={() => {
+                        if (modal) updateSlot(modal.slotIdx, { weaponType: wt.name, weaponSkill: '' });
+                        setModal(null); setSearch('');
+                      }}>
+                        <Text style={S.modalItemText}>{wt.name}</Text>
+                        <Text style={S.modalItemSub}>{wt.skills.filter(ws => ws.properties.length > 0).length} weapon skills</Text>
+                      </TouchableOpacity>
+                    ))
+                : [{ name: '-Any Weapon Skill-', level: '' as any, properties: [] as SCProp[] },
+                   ...getWSForType(slots[modal?.slotIdx ?? 0]?.weaponType ?? '')]
+                    .filter(ws => !search.trim() || ws.name.toLowerCase().includes(search.trim().toLowerCase()))
+                    .map((ws, i) => (
+                      <TouchableOpacity key={i} style={S.modalItem} onPress={() => {
+                        if (modal) updateSlot(modal.slotIdx, { weaponSkill: ws.name === '-Any Weapon Skill-' ? '' : ws.name });
+                        setModal(null); setSearch('');
+                      }}>
+                        <Text style={S.modalItemText}>{ws.name}</Text>
+                        {ws.properties.length > 0 && (
+                          <Text style={S.modalItemSub}>{ws.properties.join(' / ')} · {ws.level}</Text>
+                        )}
+                      </TouchableOpacity>
+                    ))
+              }
             </ScrollView>
           </View>
         </View>
@@ -788,153 +718,54 @@ export default function SkillchainBuilder() {
 
 // ─── STYLES ──────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#1A202C" },
-  mainTitle: { fontSize: 28, fontWeight: "800", color: "#FFFFFF", marginBottom: 6 },
-  subtitle: { fontSize: 14, color: "#9CA3AF", fontStyle: "italic", marginBottom: 24 },
+const S = StyleSheet.create({
+  container:       { flex: 1, backgroundColor: '#1A202C' },
+  content:         { padding: 16, paddingBottom: 60 },
+  title:           { fontSize: 26, fontWeight: '800', color: '#FFF', marginBottom: 16 },
+  sectionLabel:    { fontSize: 13, fontWeight: '700', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: 1, marginTop: 18, marginBottom: 8 },
+  sectionHint:     { fontSize: 11, fontWeight: '400', color: '#6B7280', textTransform: 'none', letterSpacing: 0 },
 
-  // Stage selection
-  stageBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#1F2937",
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 12,
-  },
-  stageBtnTitle: { color: "#F9FAFB", fontWeight: "700", fontSize: 17 },
-  stageBtnDesc: { color: "#9CA3AF", fontSize: 13, marginTop: 3 },
-  stageLvBadge: { fontWeight: "800", fontSize: 20, marginLeft: 12 },
+  // Slots
+  slotsGrid:       { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 4 },
+  slotCard:        { width: '31%', backgroundColor: '#2D3748', borderRadius: 8, padding: 10, borderWidth: 1, borderColor: '#4A5568', minHeight: 80 },
+  slotCardActive:  { borderColor: '#60A5FA' },
+  slotNum:         { fontSize: 18, fontWeight: '800', color: '#6B7280', marginBottom: 4 },
+  slotType:        { fontSize: 12, color: '#E5E7EB', fontWeight: '600' },
+  slotWSBtn:       { marginTop: 6, backgroundColor: '#374151', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 3 },
+  slotWSText:      { fontSize: 11, color: '#93C5FD' },
+  slotX:           { position: 'absolute', top: 6, right: 6 },
+  slotXText:       { color: '#6B7280', fontSize: 12 },
 
-  // Builder header
-  builderHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  backLink: { paddingVertical: 6, paddingRight: 12 },
-  backLinkText: { color: "#60A5FA", fontWeight: "600", fontSize: 14 },
-  goalBadge: { borderWidth: 1, borderRadius: 6, paddingHorizontal: 10, paddingVertical: 4 },
-  goalBadgeText: { fontWeight: "700", fontSize: 13 },
+  // Toggles
+  row:             { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 4 },
+  toggle:          { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2D3748', borderWidth: 1, borderColor: '#4A5568', borderRadius: 6, paddingHorizontal: 10, paddingVertical: 5 },
+  toggleOn:        { borderColor: '#60A5FA', backgroundColor: '#1E3A5F' },
+  toggleCheck:     { color: '#60A5FA', fontSize: 11, fontWeight: '700' },
+  toggleLabel:     { fontSize: 12, color: '#9CA3AF', fontWeight: '600' },
 
-  // Steps
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#2D3748",
-    borderRadius: 8,
-    marginBottom: 4,
-    overflow: "hidden",
-  },
-  stepNum: {
-    width: 36,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 14,
-    backgroundColor: "#4A5568",
-  },
-  stepNumText: { color: "#E5E7EB", fontWeight: "700", fontSize: 16 },
-  stepInfo: { flex: 1, paddingVertical: 10, paddingHorizontal: 12 },
-  wsName: { color: "#F9FAFB", fontWeight: "600", fontSize: 15 },
-  wsWeapon: { color: "#9CA3AF", fontSize: 12, marginTop: 1 },
-  wsProps: { color: "#60A5FA", fontSize: 12, marginTop: 2 },
-  removeBtn: { paddingHorizontal: 14, paddingVertical: 14 },
-  removeBtnText: { color: "#FC8181", fontSize: 16, fontWeight: "700" },
-
-  // Chain badge
-  chainBadge: { marginLeft: 36, marginBottom: 4, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6 },
-  chainName: { fontWeight: "700", fontSize: 14 },
-  chainBurst: { color: "#9CA3AF", fontSize: 12, marginTop: 1 },
-  noChain: { color: "#4B5563", fontSize: 13, fontStyle: "italic" },
-
-  // Buttons
-  addBtn: {
-    borderWidth: 1,
-    borderColor: "#4A5568",
-    borderStyle: "dashed",
-    borderRadius: 8,
-    padding: 14,
-    alignItems: "center",
-    marginTop: 8,
-    marginBottom: 16,
-  },
-  addBtnText: { color: "#60A5FA", fontWeight: "600", fontSize: 15 },
-  clearBtn: { padding: 12, alignItems: "center", marginBottom: 4 },
-  clearBtnText: { color: "#FC8181", fontSize: 14 },
-
-  // Final card
-  finalCard: {
-    borderWidth: 2,
-    borderRadius: 10,
-    padding: 16,
-    marginTop: 8,
-    marginBottom: 8,
-    backgroundColor: "#111827",
-  },
-  finalLabel: {
-    color: "#6B7280",
-    fontSize: 11,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 4,
-  },
-  finalName: { fontSize: 22, fontWeight: "800", marginBottom: 4 },
-  finalBurst: { color: "#D1D5DB", fontSize: 14 },
-
-  // Info
-  infoSection: { backgroundColor: "#1F2937", borderRadius: 8, padding: 14, marginTop: 20, marginBottom: 4 },
-  infoTitle: { color: "#E5E7EB", fontWeight: "700", fontSize: 15, marginBottom: 10 },
-  infoRow: { flexDirection: "row", marginBottom: 8, alignItems: "flex-start" },
-  infoLevel: { fontWeight: "700", fontSize: 13, width: 44, marginTop: 1 },
-  infoText: { flex: 1, color: "#9CA3AF", fontSize: 13, lineHeight: 19 },
-  infoBody: { color: "#9CA3AF", fontSize: 13, lineHeight: 20, marginBottom: 8 },
-  penaltyRow: {
-    flexDirection: "row",
-    backgroundColor: "#2D3748",
-    borderRadius: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    marginBottom: 4,
-    justifyContent: "space-between",
-  },
-  penaltyNum: { color: "#E5E7EB", fontWeight: "600", fontSize: 13 },
-  penaltyVal: { color: "#FC8181", fontWeight: "700", fontSize: 13 },
+  // Results
+  emptyBox:        { backgroundColor: '#2D3748', borderRadius: 8, padding: 20, alignItems: 'center' },
+  emptyText:       { color: '#6B7280', fontSize: 13, textAlign: 'center' },
+  chainGroup:      { backgroundColor: '#1F2937', borderRadius: 8, borderLeftWidth: 4, padding: 12, marginBottom: 10 },
+  chainGroupHeader:{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 4 },
+  chainName:       { fontSize: 17, fontWeight: '800', flex: 1 },
+  lvBadge:         { borderRadius: 5, paddingHorizontal: 8, paddingVertical: 3 },
+  lvText:          { fontSize: 12, fontWeight: '700' },
+  burstLine:       { color: '#6B7280', fontSize: 11, marginBottom: 8, fontStyle: 'italic' },
+  pairRow:         { paddingVertical: 5, borderTopWidth: 1, borderTopColor: '#374151' },
+  pairText:        { fontSize: 13 },
+  pairWS:          { color: '#E5E7EB', fontWeight: '600' },
+  pairArrow:       { color: '#6B7280' },
+  pairSub:         { color: '#4B5563', fontSize: 11, marginTop: 1 },
 
   // Modal
-  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "flex-end" },
-  modalContent: { backgroundColor: "#1F2937", borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: "80%", paddingBottom: 24 },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#374151",
-  },
-  modalTitle: { color: "#F9FAFB", fontWeight: "700", fontSize: 17 },
-  modalClose: { color: "#9CA3AF", fontSize: 20, paddingLeft: 12 },
-  searchInput: {
-    backgroundColor: "#111827",
-    color: "#F9FAFB",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: "#374151",
-  },
-  emptyMsg: { color: "#6B7280", textAlign: "center", marginTop: 24, fontSize: 14 },
-  pickerItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#374151",
-  },
-  pickerItemRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  pickerItemText: { color: "#E5E7EB", fontSize: 15, fontWeight: "500" },
-  chainResultBadge: { fontSize: 12, fontWeight: "700" },
-  pickerItemSub: { color: "#6B7280", fontSize: 12, marginTop: 2 },
+  overlay:         { flex: 1, backgroundColor: 'rgba(0,0,0,0.75)', justifyContent: 'flex-end' },
+  modalBox:        { backgroundColor: '#1F2937', borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: '85%', paddingBottom: 24 },
+  modalHeader:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#374151' },
+  modalTitle:      { color: '#F9FAFB', fontWeight: '700', fontSize: 16 },
+  modalClose:      { color: '#9CA3AF', fontSize: 20, paddingLeft: 12 },
+  searchInput:     { backgroundColor: '#111827', color: '#F9FAFB', paddingHorizontal: 14, paddingVertical: 10, fontSize: 14, borderBottomWidth: 1, borderBottomColor: '#374151' },
+  modalItem:       { paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: '#374151' },
+  modalItemText:   { color: '#E5E7EB', fontSize: 15, fontWeight: '500' },
+  modalItemSub:    { color: '#6B7280', fontSize: 11, marginTop: 2 },
 });
