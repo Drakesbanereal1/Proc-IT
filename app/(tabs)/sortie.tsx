@@ -288,48 +288,6 @@ const sortieBosses: BossData[] = [
   },
 ];
 
-const ambuscadeBosses: BossData[] = [
-  {
-    id: "obdella", name: "Abject Obdella", sector: "Sector A",
-    image: require("../../assets/images/Abject Obdella.png"),
-    strategy: ["Weak to Thunder", "Keep party spread — Corrosive Ooze is AoE", "Magic bursts for max damage", "Dispellable buffs"],
-  },
-  {
-    id: "porxie", name: "Biune Porxie", sector: "Sector B",
-    image: require("../../assets/images/Biune Porxie.png"),
-    strategy: ["Weak to Ice", "Uses charm and TP moves frequently", "Keep shadows up", "Ice-based damage recommended"],
-  },
-  {
-    id: "bhoot", name: "Cachaemic Bhoot", sector: "Sector C",
-    image: require("../../assets/images/Cachaemic Bhoot.png"),
-    strategy: ["Weak to Fire", "Undead NM — uses strong drain attacks", "Fire damage is most effective", "Must spawn within 5 min of Coffer #C objective"],
-  },
-  {
-    id: "deleterious", name: "Demisang Deleterious", sector: "Sector D",
-    image: require("../../assets/images/Demisang Deleterious.png"),
-    strategy: ["Demon type NM", "Uses powerful magical attacks", "Spawn after killing 3 more Demisang", "Maintain shadows"],
-  },
-  {
-    id: "botulus", name: "Esurient Botulus", sector: "Sector E",
-    image: require("../../assets/images/Esurient Botulus.png"),
-    strategy: ["Weak to Wind", "Deal majority of damage from behind for Chest #E", "Keep HP high to survive drain moves", "6 mini-Naakuals spawn 5 min after entry"],
-  },
-  {
-    id: "ixion", name: "Fetid Ixion", sector: "Sector F",
-    image: require("../../assets/images/Fetid Ixion.png"),
-    strategy: ["Weak to Dark", "Break the horn before killing for Chest #F", "Thornsong reflects damage — watch timing", "Dark magic and physical damage recommended"],
-  },
-  {
-    id: "naraka", name: "Gyvewrapped Naraka", sector: "Sector G",
-    image: require("../../assets/images/Gyvewrapped Naraka.png"),
-    strategy: ["Uses binding attacks", "Kill 19 Gyvewrapped Dullahan for Casket #G2", "Stand near Bitzer 30s for Casket #G1", "6 mini-Naakuals must be killed in correct order"],
-  },
-  {
-    id: "tulittia", name: "Haughty Tulittia", sector: "Sector H",
-    image: require("../../assets/images/Haughty Tulittia.png"),
-    strategy: ["Plant-type NM", "Majority indirect damage required for Chest #H", "Kill all Haughty Paladin for Casket #H2", "Fire damage effective"],
-  },
-];
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
@@ -413,7 +371,7 @@ function BossCard({ boss }: { boss: BossData }) {
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 
 export default function Sortie() {
-  const [tab, setTab] = useState<'objectives' | 'bosses' | 'ambuscade'>('objectives');
+  const [tab, setTab] = useState<'objectives' | 'bosses'>('objectives');
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -437,14 +395,14 @@ export default function Sortie() {
 
       {/* Tab switcher */}
       <View style={styles.tabs}>
-        {(['objectives', 'bosses', 'ambuscade'] as const).map(t => (
+        {(['objectives', 'bosses'] as const).map(t => (
           <TouchableOpacity
             key={t}
             style={[styles.tab, tab === t && styles.tabActive]}
             onPress={() => setTab(t)}
           >
             <Text style={[styles.tabText, tab === t && styles.tabTextActive]}>
-              {t === 'objectives' ? 'Objectives' : t === 'bosses' ? 'Bosses' : 'Ambuscade'}
+              {t === 'objectives' ? 'Objectives' : 'Bosses'}
             </Text>
           </TouchableOpacity>
         ))}
@@ -470,15 +428,6 @@ export default function Sortie() {
         </View>
       )}
 
-      {/* Ambuscade tab */}
-      {tab === 'ambuscade' && (
-        <View>
-          <Text style={styles.description}>
-            Ambuscade sector bosses and strategies.
-          </Text>
-          {ambuscadeBosses.map(b => <BossCard key={b.id} boss={b} />)}
-        </View>
-      )}
     </ScrollView>
   );
 }
