@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { ScrollView, Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { ScrollView, Text, View, StyleSheet, Image, TouchableOpacity, Modal, Dimensions } from "react-native";
+
+const SCREEN = Dimensions.get('window');
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 
@@ -319,12 +321,35 @@ function SectorCard({ sector }: { sector: SortieSector }) {
   );
 }
 
+// ─── IMAGE LIGHTBOX ───────────────────────────────────────────────────────────
+
+function ImageLightbox({ source, style, resizeMode }: { source: any; style: any; resizeMode?: any }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <>
+      <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.85}>
+        <Image source={source} style={style} resizeMode={resizeMode ?? 'cover'} />
+      </TouchableOpacity>
+      <Modal visible={visible} transparent animationType="fade" onRequestClose={() => setVisible(false)}>
+        <TouchableOpacity style={styles.lightboxOverlay} activeOpacity={1} onPress={() => setVisible(false)}>
+          <Image
+            source={source}
+            style={{ width: SCREEN.width, height: SCREEN.height * 0.8 }}
+            resizeMode="contain"
+          />
+          <Text style={styles.lightboxHint}>tap anywhere to close</Text>
+        </TouchableOpacity>
+      </Modal>
+    </>
+  );
+}
+
 function BossCard({ boss }: { boss: BossData }) {
   const [open, setOpen] = useState(false);
   return (
     <View style={styles.bossCard}>
       <TouchableOpacity style={styles.bossHeader} onPress={() => setOpen(o => !o)} activeOpacity={0.7}>
-        <Image source={boss.image} style={styles.bossThumbnail} resizeMode="cover" />
+        <ImageLightbox source={boss.image} style={styles.bossThumbnail} resizeMode="cover" />
         <View style={styles.bossHeaderText}>
           <Text style={styles.bossName}>{boss.name}</Text>
           <Text style={styles.bossSector}>{boss.sector}</Text>
@@ -335,7 +360,7 @@ function BossCard({ boss }: { boss: BossData }) {
 
       {open && (
         <View style={styles.bossBody}>
-          <Image source={boss.image} style={styles.bossImage} resizeMode="contain" />
+          <ImageLightbox source={boss.image} style={styles.bossImage} resizeMode="contain" />
 
           {boss.buffs && boss.buffs.length > 0 && (
             <View style={styles.bossSection}>
@@ -550,6 +575,10 @@ const styles = StyleSheet.create({
   bossSection:    { gap: 4 },
   bossSectionTitle: { color: C.blue, fontWeight: '700', fontSize: 14, marginBottom: 2 },
   bullet:         { color: C.text, fontSize: 13, lineHeight: 20 },
+
+  // Lightbox
+  lightboxOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.92)', justifyContent: 'center', alignItems: 'center' },
+  lightboxHint:    { color: '#6B7280', fontSize: 12, fontStyle: 'italic', marginTop: 12 },
 
   // Gallimaufry tables
   galliTitle:     { fontSize: 16, fontWeight: '700', color: '#C084FC', marginTop: 20, marginBottom: 8, borderBottomWidth: 1, borderBottomColor: '#3D2A5A', paddingBottom: 4 },
